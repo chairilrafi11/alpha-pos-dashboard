@@ -48,6 +48,11 @@ const navItems: NavItem[] = [
     ],
   },
   {
+    icon: <UserCircleIcon />,
+    name: "User",
+    path: "/user",
+  },
+  {
     name: "AI Assistant",
     icon: <AiIcon />,
     new: true,
