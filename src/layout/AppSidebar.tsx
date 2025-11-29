@@ -53,6 +53,11 @@ const navItems: NavItem[] = [
     path: "/user",
   },
   {
+    icon: <BoxCubeIcon />,
+    name: "Merchant",
+    path: "/merchant",
+  },
+  {
     name: "AI Assistant",
     icon: <AiIcon />,
     new: true,
