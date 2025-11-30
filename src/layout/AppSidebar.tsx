@@ -36,6 +36,11 @@ type NavItem = {
 const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
+    name: "Home",
+    path: "/",
+  },
+  {
+    icon: <GridIcon />,
     name: "Dashboard",
     subItems: [
       { name: "Ecommerce", path: "/" },
@@ -56,6 +61,14 @@ const navItems: NavItem[] = [
     icon: <BoxCubeIcon />,
     name: "Merchant",
     path: "/merchant",
+  },
+  {
+    name: "Data Meta",
+    icon: <ListIcon />,
+    subItems: [
+      { name: "Category", path: "/category" },
+      { name: "Product", path: "/product" },
+    ],
   },
   {
     name: "AI Assistant",

@@ -42,7 +42,7 @@ export const removeToken = (): void => {
 export async function loginUser(email: string, password: string): Promise<LoginResponse> {
   try {
     // T adalah LoginData yang diharapkan dari response.data
-    const data = await apiFetch<LoginResponse>('/auth/login', {
+    const data = await apiFetch<LoginResponse>('/sign-in', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
       headers: { 'Content-Type': 'application/json' },
