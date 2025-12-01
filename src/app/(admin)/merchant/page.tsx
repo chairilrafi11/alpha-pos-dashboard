@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default function MerchantPage() {
   return (
     <div>
-      <PageBreadcrumb pageTitle="Data Tables Merchant" />
+      <PageBreadcrumb pageTitle="Data Merchant" />
       <div className="space-y-5 sm:space-y-6">
         <ComponentCard title="Data Merchant">
           <DataTableMerchant />

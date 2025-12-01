@@ -4,7 +4,6 @@ import { apiFetch } from '@/utils/apiClient';
 import { ApiError } from '@/utils/apiError';
 import toast from 'react-hot-toast';
 import { User } from '@/types/user/user';
-import { BaseParams } from '@/types/shared/baseParams';
 
 
 export async function getUser(): Promise<User[]> {

@@ -1,16 +1,18 @@
 
 
-import { apiFetch } from '@/utils/apiClient';
+import {  apiFetchPaginated } from '@/utils/apiClient';
 import { ApiError } from '@/utils/apiError';
 import toast from 'react-hot-toast';
 import { Merchant } from '@/types/merchant/merchant';
+import { BaseParams, PaginatedResponse } from '@/types/shared/commonModel';
+import { buildQueryParams } from '@/utils/urlHelpers';
 
 
-export async function getMerchants(): Promise<Merchant[]> {
+export async function getMerchants(params: BaseParams): Promise<PaginatedResponse<Merchant>> {
+    const queryString = buildQueryParams(params);
+    const endpoint = `/merchant?${queryString}`;
     try {
-        const endpoint = `/merchant`;
-
-        const data = await apiFetch<Merchant[]>(endpoint, {
+        const data = await apiFetchPaginated<Merchant>(endpoint, {
             method: 'GET',
         });
 

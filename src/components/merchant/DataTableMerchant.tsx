@@ -1,7 +1,6 @@
 "use client";
 import { AngleUpIcon, AngleDownIcon, TrashBinIcon, PencilIcon, PlusIcon } from "@/icons";
-import { User } from "@/types/user/user";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Badge from "../ui/badge/Badge";
 import Button from "../ui/button/Button";
 import { Table, TableHeader, TableRow, TableCell, TableBody } from "../ui/table";
@@ -10,63 +9,85 @@ import { globalConstant } from "@/types/shared/constants";
 import Image from "next/image";
 import { getMerchants } from "@/services/merchantService";
 import { Merchant } from "@/types/merchant/merchant";
-
+import { initialPageInfo, PaginatedResponse, BaseParams } from "@/types/shared/commonModel";
 
 export default function DataTableMerchant() {
-  const [merchantsData, setMerchantsData] = useState<Merchant[]>([]);
+  const [merchantsData, setMerchantsData] = useState<PaginatedResponse<Merchant>>({
+    data: [],
+    page_info: initialPageInfo,
+  });
   const [isLoading, setIsLoading] = useState(true);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [params, setParams] = useState<BaseParams>({
+    page: 1,
+    limit: 10,
+    name: "",
+  });
+  const [searchQuery, setSearchQuery] = useState(params.name);
 
-  const totalPages = Math.ceil(merchantsData.length / rowsPerPage);
+  const [rowsPerPage, setRowsPerPage] = useState(params.limit);
 
-  const currentData = merchantsData.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
-  );
+  const fetchData = useCallback(
+    async () => {
 
-  const totalEntries = merchantsData.length;
-  const startIndex = (currentPage - 1) * rowsPerPage;
-  const endIndex = Math.min(startIndex + rowsPerPage, totalEntries);
-
-  const params = useMemo(() => {
-    return {
-      limit: 10,
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!params) {
-      setIsLoading(false);
-      return;
-    }
-
-    const fetchData = async () => {
       try {
         setIsLoading(true);
-        const data = await getMerchants();
+
+        const data = await getMerchants(params);
+
         setMerchantsData(data);
+        setRowsPerPage(data.page_info.page_size);
+
       } catch (error) {
-        setMerchantsData([]);
+        console.error("Gagal memuat merchant:", error);
       } finally {
         setIsLoading(false);
       }
-    };
+    },
+    [params],
+  );
+
+  useEffect(() => {
     fetchData();
-  }, [params]);
+  }, [fetchData]);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if (searchQuery !== params.name) {
+        setParams(prev => ({
+          ...prev,
+          name: searchQuery, // <-- Update params.name dengan nilai akhir
+          page: 1, // Reset ke halaman 1
+        }));
+      }
+
+    }, 500); // Debounce Time: 500ms
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchQuery]);
 
   const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
+    if (page >= 1 && page <= merchantsData.page_info.total_page) {
+      setParams(prev => ({
+        ...prev,
+        page: page
+      }));
     }
   };
 
   const handleRowsPerPageChange = (
     e: React.ChangeEvent<HTMLSelectElement>
   ): void => {
-    const newRowsPerPage = parseInt(e.target.value, 10);
-    setRowsPerPage(newRowsPerPage);
-    setCurrentPage(1);
+    const newLimit = parseInt(e.target.value, 10);
+    setParams(prev => ({
+      ...prev,
+      limit: newLimit,
+      page: 1,
+    }));
+  };
+
+  const handlerSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
   };
 
   return (
@@ -145,7 +166,9 @@ export default function DataTableMerchant() {
               type="text"
               x-model="search"
               placeholder="Search..."
+              value={searchQuery}
               className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent py-2.5 pl-11 pr-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[300px]"
+              onChange={handlerSearch}
             />
           </div>
           <button className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
@@ -216,20 +239,6 @@ export default function DataTableMerchant() {
                 >
                   <div className="flex items-center justify-between cursor-pointer">
                     <p className="font-medium text-gray-700 text-theme-xs dark:text-gray-400">
-                      Business Type
-                    </p>
-                    <button className="flex flex-col gap-0.5">
-                      <AngleUpIcon className="text-gray-300 dark:text-gray-700" />
-                      <AngleDownIcon className="text-gray-300 dark:text-gray-700" />
-                    </button>
-                  </div>
-                </TableCell>
-                <TableCell
-                  isHeader
-                  className="px-4 py-3 border border-gray-100 dark:border-white/[0.05]"
-                >
-                  <div className="flex items-center justify-between cursor-pointer">
-                    <p className="font-medium text-gray-700 text-theme-xs dark:text-gray-400">
                       Phone
                     </p>
                     <button className="flex flex-col gap-0.5">
@@ -269,7 +278,7 @@ export default function DataTableMerchant() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {currentData.map((merchant, index) => (
+              {merchantsData.data.map((merchant, index) => (
                 <TableRow key={index}>
                   <TableCell className="px-4 py-4 border border-gray-100 dark:border-white/[0.05] dark:text-white/90 whitespace-nowrap">
                     <div className="flex items-center gap-3">
@@ -293,14 +302,6 @@ export default function DataTableMerchant() {
                   </TableCell>
                   <TableCell className="px-4 py-4 font-medium text-gray-500 border border-gray-100 dark:border-white/[0.05] text-theme-xs dark:text-gray-400 whitespace-nowrap">
                     <span> {merchant.address}</span>
-                  </TableCell>
-                  <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap">
-                    <Badge
-                      size="sm"
-                      color={merchant.business_type_name == "L" ? "primary" : "warning"}
-                    >
-                      {merchant.business_type_name}
-                    </Badge>
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap">
                     {merchant.phone}
@@ -331,15 +332,14 @@ export default function DataTableMerchant() {
       </div>
       <div className="border border-t-0 rounded-b-xl border-gray-100 py-4 pl-[18px] pr-4 dark:border-white/[0.05]">
         <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between">
-          {/* Left side: Showing entries */}
           <div className="pb-3 xl:pb-0">
             <p className="pb-3 text-sm font-medium text-center text-gray-500 border-b border-gray-100 dark:border-gray-800 dark:text-gray-400 xl:border-b-0 xl:pb-0 xl:text-left">
-              Showing {startIndex + 1} to {endIndex} of {totalEntries} entries
+              Showing {merchantsData?.page_info.page_number} to {merchantsData?.page_info.page_size} of {merchantsData?.page_info.total_data} entries
             </p>
           </div>
           <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
+            currentPage={merchantsData?.page_info.page_number}
+            totalPages={merchantsData?.page_info.total_page}
             onPageChange={handlePageChange}
           />
         </div>
