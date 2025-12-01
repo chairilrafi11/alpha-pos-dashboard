@@ -6,9 +6,9 @@ import toast from 'react-hot-toast';
 import { Merchant } from '@/types/merchant/merchant';
 
 
-export async function getMerchant(): Promise<Merchant[]> {
+export async function getMerchants(): Promise<Merchant[]> {
     try {
-        const endpoint = `/site`;
+        const endpoint = `/merchant`;
 
         const data = await apiFetch<Merchant[]>(endpoint, {
             method: 'GET',

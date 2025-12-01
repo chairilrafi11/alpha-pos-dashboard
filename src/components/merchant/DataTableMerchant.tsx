@@ -8,7 +8,7 @@ import { Table, TableHeader, TableRow, TableCell, TableBody } from "../ui/table"
 import Pagination from "../shared/Pagination";
 import { globalConstant } from "@/types/shared/constants";
 import Image from "next/image";
-import { getMerchant } from "@/services/merchantService";
+import { getMerchants } from "@/services/merchantService";
 import { Merchant } from "@/types/merchant/merchant";
 
 
@@ -44,7 +44,7 @@ export default function DataTableMerchant() {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const data = await getMerchant();
+        const data = await getMerchants();
         setMerchantsData(data);
       } catch (error) {
         setMerchantsData([]);

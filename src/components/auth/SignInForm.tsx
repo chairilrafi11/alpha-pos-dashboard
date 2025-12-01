@@ -18,10 +18,8 @@ export default function SignInForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // Panggil logic login dari Context
       await login(email, password);
     } catch (error) {
-      // Tangani error, misal tampilkan notifikasi
       console.error("Login Gagal:", error);
     }
   };

@@ -44,7 +44,7 @@ export async function loginUser(email: string, password: string): Promise<LoginR
     // T adalah LoginData yang diharapkan dari response.data
     const data = await apiFetch<LoginResponse>('/sign-in', {
       method: 'POST',
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, platform: 'web' }),
       headers: { 'Content-Type': 'application/json' },
     });
 

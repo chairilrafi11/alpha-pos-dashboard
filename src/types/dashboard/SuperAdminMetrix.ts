@@ -1,8 +1,11 @@
 export interface SuperAdminMetrix {
   platform_summary: PlatformSummary
+  order_status: OrderStatus[]
+  sessions_by_platform: SessionsByPlatform
   growth_metrics: GrowthMetrics
   sales_chart_data: SalesChartDaum[]
   top_merchants: TopMerchant[]
+  top_products: TopProduct[]
   system_status: SystemStatus
 }
 
@@ -15,6 +18,19 @@ export interface PlatformSummary {
   total_category: number
   total_products: number
   total_suppliers: number
+}
+
+export interface OrderStatus {
+  date: string
+  total_finished: number
+  total_canceled: number
+  total_on_progress: number
+}
+
+export interface SessionsByPlatform {
+  android: number
+  ios: number
+  web: number
 }
 
 export interface GrowthMetrics {
@@ -31,9 +47,21 @@ export interface SalesChartDaum {
 }
 
 export interface TopMerchant {
+  site_id : number
   site_name: string
+  group_id: number
+  group_name: string
   total_sales: number
   transaction_count: number
+}
+
+export interface TopProduct {
+  id: number
+  name: string
+  image: string
+  site_name: string
+  harga_jual: string
+  total_sold: number
 }
 
 export interface SystemStatus {
