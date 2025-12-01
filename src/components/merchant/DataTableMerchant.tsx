@@ -1,4 +1,5 @@
 "use client";
+
 import { AngleUpIcon, AngleDownIcon, TrashBinIcon, PencilIcon, PlusIcon } from "@/icons";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Badge from "../ui/badge/Badge";
@@ -10,7 +11,6 @@ import Image from "next/image";
 import { getMerchants } from "@/services/merchantService";
 import { Merchant } from "@/types/merchant/merchant";
 import { initialPageInfo, PaginatedResponse, BaseParams } from "@/types/shared/commonModel";
-import router from "next/router";
 import { useRouter } from "next/navigation";
 import { encodeId } from "@/utils/idHasher";
 

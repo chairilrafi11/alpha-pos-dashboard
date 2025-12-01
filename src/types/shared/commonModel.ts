@@ -23,3 +23,8 @@ export interface BaseParams {
     search?: string | undefined;
     name?: string | undefined;
 }
+
+export const initialBaseParams: BaseParams = {
+    page: 1,
+    limit: 10,
+}

@@ -15,7 +15,7 @@ export default function InvoicesPage() {
   return (
     <div>
       <PageBreadcrumb pageTitle="Invoices" />
-      <InvoiceMetrics />
+      <InvoiceMetrics merchantId={1}/>
       <InvoiceListTable />
     </div>
   );

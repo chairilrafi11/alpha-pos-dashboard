@@ -1,14 +1,33 @@
-import Link from "next/link";
-import React from "react";
+"use client";
 
-export default function InvoiceMetrics({ merchantId }: { merchantId: number | null }) {
+import { getMerchantDetail } from "@/services/merchantService";
+import { MerchantDetail } from "@/types/merchant/merchantDetail";
+import { formatIDR } from "@/utils/currencyFormatter";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
+
+export default function DetailMerchantMetrics({ id }: { id: number }) {
+  const [merchantData, setMerchantData] = useState<MerchantDetail>();
+
+  const fetchMerchantData = async () => {
+    const data = await getMerchantDetail(id);
+    setMerchantData(data);
+  };
+
+  useEffect(() => {
+    fetchMerchantData();
+  }, []);
+
   return (
     <div className="mb-6 rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 dark:border-gray-800 dark:bg-white/[0.03]">
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h2 className="font-semibold text-gray-800 dark:text-white/90">
-            Overview
+            {merchantData?.name}
           </h2>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            {merchantData?.email}
+          </p>
         </div>
         <div>
           <Link
@@ -37,28 +56,28 @@ export default function InvoiceMetrics({ merchantId }: { merchantId: number | nu
       <div className="grid grid-cols-1 rounded-xl border border-gray-200 sm:grid-cols-2 lg:grid-cols-4 lg:divide-x lg:divide-y-0 dark:divide-gray-800 dark:border-gray-800">
         <div className="border-b p-5 sm:border-r lg:border-b-0">
           <p className="mb-1.5 text-sm text-gray-400 dark:text-gray-500">
-            Overdue
+            Total Transactions Value 
           </p>
-          <h3 className="text-3xl text-gray-800 dark:text-white/90">$120.80</h3>
+          <h3 className="text-3xl text-gray-800 dark:text-white/90">{formatIDR(merchantData?.total_invoices_amount)}</h3>
         </div>
         <div className="border-b p-5 lg:border-b-0">
           <p className="mb-1.5 text-sm text-gray-400 dark:text-gray-500">
-            Due within next 30 days
+            Total Invoices
           </p>
-          <h3 className="text-3xl text-gray-800 dark:text-white/90">0.00</h3>
+          <h3 className="text-3xl text-gray-800 dark:text-white/90">{merchantData?.total_invoices}</h3>
         </div>
         <div className="border-b p-5 sm:border-r sm:border-b-0">
           <p className="mb-1.5 text-sm text-gray-400 dark:text-gray-500">
-            Average time to get paid
+            Employess
           </p>
-          <h3 className="text-3xl text-gray-800 dark:text-white/90">24 days</h3>
+          <h3 className="text-3xl text-gray-800 dark:text-white/90">{merchantData?.total_employees}</h3>
         </div>
         <div className="p-5">
           <p className="mb-1.5 text-sm text-gray-400 dark:text-gray-500">
-            Upcoming Payout
+            Sites
           </p>
           <h3 className="text-3xl text-gray-800 dark:text-white/90">
-            $3,450.50
+            {merchantData?.total_sites}
           </h3>
         </div>
       </div>
