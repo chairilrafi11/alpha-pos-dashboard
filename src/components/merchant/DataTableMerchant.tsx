@@ -10,8 +10,12 @@ import Image from "next/image";
 import { getMerchants } from "@/services/merchantService";
 import { Merchant } from "@/types/merchant/merchant";
 import { initialPageInfo, PaginatedResponse, BaseParams } from "@/types/shared/commonModel";
+import router from "next/router";
+import { useRouter } from "next/navigation";
+import { encodeId } from "@/utils/idHasher";
 
 export default function DataTableMerchant() {
+  const router = useRouter();
   const [merchantsData, setMerchantsData] = useState<PaginatedResponse<Merchant>>({
     data: [],
     page_info: initialPageInfo,
@@ -23,7 +27,6 @@ export default function DataTableMerchant() {
     name: "",
   });
   const [searchQuery, setSearchQuery] = useState(params.name);
-
   const [rowsPerPage, setRowsPerPage] = useState(params.limit);
 
   const fetchData = useCallback(
@@ -88,6 +91,11 @@ export default function DataTableMerchant() {
 
   const handlerSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
+  };
+
+  const handleRowClick = (merchantId: number) => {
+    const hashedId = encodeId(merchantId);
+    router.push(`/merchant/${hashedId}`);
   };
 
   return (
@@ -205,12 +213,12 @@ export default function DataTableMerchant() {
               <TableRow>
                 <TableCell
                   isHeader
-                  className="px-4 py-3 border border-gray-100 dark:border-white/[0.05]"
+                  className="px-4 py-3 border border-gray-100 dark:border-white/[0.05] min-w-[200px]"
                 >
                   <div className="flex items-center justify-between cursor-pointer">
                     <div className="flex gap-3">
                       <span className="font-medium text-gray-700 text-theme-xs dark:text-gray-400">
-                        User
+                        Name
                       </span>
                     </div>
                     <button className="flex flex-col gap-0.5">
@@ -226,6 +234,20 @@ export default function DataTableMerchant() {
                   <div className="flex items-center justify-between cursor-pointer">
                     <p className="font-medium text-gray-700 text-theme-xs dark:text-gray-400">
                       Address
+                    </p>
+                    <button className="flex flex-col gap-0.5">
+                      <AngleUpIcon className="text-gray-300 dark:text-gray-700" />
+                      <AngleDownIcon className="text-gray-300 dark:text-gray-700" />
+                    </button>
+                  </div>
+                </TableCell>
+                <TableCell
+                  isHeader
+                  className="px-4 py-3 border border-gray-100 dark:border-white/[0.05]"
+                >
+                  <div className="flex items-center justify-between cursor-pointer">
+                    <p className="font-medium text-gray-700 text-theme-xs dark:text-gray-400">
+                      Email
                     </p>
                     <button className="flex flex-col gap-0.5">
                       <AngleUpIcon className="text-gray-300 dark:text-gray-700" />
@@ -279,7 +301,11 @@ export default function DataTableMerchant() {
             </TableHeader>
             <TableBody>
               {merchantsData.data.map((merchant, index) => (
-                <TableRow key={index}>
+                <TableRow
+                  key={index}
+                  className="cursor-pointer hover:bg-gray-50 dark:hover:bg-white/[0.05] transition duration-150"
+                  onClick={() => handleRowClick(merchant.id)}
+                >
                   <TableCell className="px-4 py-4 border border-gray-100 dark:border-white/[0.05] dark:text-white/90 whitespace-nowrap">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 overflow-hidden rounded-full">
@@ -290,23 +316,21 @@ export default function DataTableMerchant() {
                           alt={merchant.name}
                         />
                       </div>
-                      <div>
-                        <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                          {merchant.name}
-                        </span>
-                        <span className="block text-gray-500 text-theme-xs dark:text-gray-400">
-                          {merchant.email}
-                        </span>
-                      </div>
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-400">
+                        {merchant.name}
+                      </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-4 font-medium text-gray-500 border border-gray-100 dark:border-white/[0.05] text-theme-xs dark:text-gray-400 whitespace-nowrap">
+                  <TableCell className="px-4 py-4 text-gray-500 border border-gray-100 dark:border-white/[0.05] text-sm text-gray-500 dark:text-gray-400">
                     <span> {merchant.address}</span>
                   </TableCell>
-                  <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap">
+                  <TableCell className="px-4 py-4 text-gray-500 border border-gray-100 dark:border-white/[0.05] text-sm text-gray-500 dark:text-gray-400">
+                    {merchant.email}
+                  </TableCell>
+                  <TableCell className="px-4 py-4 text-gray-500 border border-gray-100 dark:border-white/[0.05] text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
                     {merchant.phone}
                   </TableCell>
-                  <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap">
+                  <TableCell className="px-4 py-4 text-gray-500 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap">
                     <Badge
                       size="sm"
                       color={"success"}
@@ -315,6 +339,7 @@ export default function DataTableMerchant() {
                     </Badge>
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap">
+                    <div className="flex items-center w-full gap-2" onClick={(e) => e.stopPropagation()}></div>
                     <div className="flex items-center w-full gap-2">
                       <button className="text-gray-500 hover:text-error-500 dark:text-gray-400 dark:hover:text-error-500">
                         <TrashBinIcon />
