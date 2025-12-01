@@ -8,6 +8,7 @@ import { BaseParams, PaginatedResponse } from '@/types/shared/commonModel';
 import { buildQueryParams } from '@/utils/urlHelpers';
 import { MerchantDetail } from '@/types/merchant/merchantDetail';
 import { Site } from '@/types/merchant/site';
+import { MerchantCreateRequest } from '@/types/merchant/merchantCreateRequest';
 
 export async function getMerchants(params: BaseParams): Promise<PaginatedResponse<Merchant>> {
     const queryString = buildQueryParams(params);
@@ -48,6 +49,22 @@ export async function getMerchantSites(id: number, params: BaseParams): Promise<
     try {
         const data = await apiFetchPaginated<Site>(endpoint, {
             method: 'GET',
+        });
+
+        return data;
+    } catch (error) {
+        if (error instanceof ApiError) {
+            toast.error(`Gagal memuat merchant sites: ${error.message}`);
+        }
+        throw error;
+    }
+}
+export async function createMerchant(body: MerchantCreateRequest): Promise<Site> {
+    const endpoint = `/merchant`;
+    try {
+        const data = await apiFetch<Site>(endpoint, {
+            method: 'POST',
+            body: JSON.stringify(body),
         });
 
         return data;

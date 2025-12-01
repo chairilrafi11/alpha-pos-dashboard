@@ -5,6 +5,8 @@ import { SidebarProvider } from '@/context/SidebarContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { AuthProvider } from '@/context/AuthContext';
 import { Toaster } from 'react-hot-toast';
+import { ModalProvider } from '@/context/ModalContext';
+import GlobalModalRenderer from '@/components/modal/GlobalModelRenderer';
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -20,12 +22,14 @@ export default function RootLayout({
       <body className={`${outfit.className} dark:bg-gray-900`}>
         <Toaster position="top-right" />
         <AuthProvider>
-          <ThemeProvider>
-            <SidebarProvider>{children}</SidebarProvider>
-          </ThemeProvider>
+          <ModalProvider>
+            <ThemeProvider>
+              <SidebarProvider>{children}</SidebarProvider>
+            </ThemeProvider>
+            <GlobalModalRenderer />
+          </ModalProvider>
         </AuthProvider>
-
       </body>
-    </html>
+    </html >
   );
 }

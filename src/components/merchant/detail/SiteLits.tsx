@@ -1,6 +1,8 @@
 "use client";
 
 import TableDropdown from "@/components/common/TableDropdown";
+import Button from "@/components/ui/button/Button";
+import { PlusIcon } from "@/icons";
 import { getMerchantSites } from "@/services/merchantService";
 import { Site } from "@/types/merchant/site";
 import { BaseParams, initialBaseParams, initialPageInfo, PaginatedResponse } from "@/types/shared/commonModel";
@@ -97,7 +99,7 @@ export default function SiteList({ id }: { id: number }) {
   });
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [filterStatus, setFilterStatus] = useState<
-    "All" | "Active" | "Inactive" 
+    "All" | "Active" | "Inactive"
   >("All");
   const [search, setSearch] = useState<string>("");
   const [showFilter, setShowFilter] = useState<boolean>(false);
@@ -325,6 +327,9 @@ export default function SiteList({ id }: { id: number }) {
               </svg>
               Export
             </button>
+            <Button size="sm" variant="primary" endIcon={<PlusIcon />}>
+              Add
+            </Button>
           </div>
         </div>
       </div>
