@@ -3,13 +3,14 @@
 import TableDropdown from "@/components/common/TableDropdown";
 import Button from "@/components/ui/button/Button";
 import { PlusIcon } from "@/icons";
-import { getBranches } from "@/services/branchService";
+import { getBranches, deleteBranch } from "@/services/branchService";
 import { Branch } from "@/types/branch/branch";
 import { BaseParams, initialBaseParams, initialPageInfo, PaginatedResponse } from "@/types/shared/commonModel";
 import Link from "next/link";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { encodeId } from "@/utils/idHasher";
+import { useGlobalModal } from "@/context/ModalContext";
 
 interface SortState {
   sortBy: "name" | "phone";
@@ -89,6 +90,7 @@ const FilterDropdown: React.FC<{
 
 export default function BranchList({ merchantId }: { merchantId: number }) {
   const router = useRouter();
+  const { openModal } = useGlobalModal();
   const [branches, setBranchs] = useState<PaginatedResponse<Branch>>({
     data: [],
     page_info: initialPageInfo,
@@ -188,6 +190,27 @@ export default function BranchList({ merchantId }: { merchantId: number }) {
     fetchData();
   }, [fetchData]);
 
+  const handleDelete = (selectedBranch: Branch) => {
+    openModal({
+      title: "Delete Branch",
+      content: `Are you sure you want to delete ${selectedBranch.name}?`,
+      type: "confirm",
+      onConfirm: () => {
+        handleDeleteBranchLogic(merchantId, selectedBranch.id);
+      },
+    })
+  }
+
+  const handleDeleteBranchLogic = async (merchantId: number, branchId: number) => {
+    try {
+      await deleteBranch(merchantId, branchId);
+
+      fetchData();
+
+    } catch (error) {
+      console.error("Gagal menghapus cabang:", error);
+    }
+  };
 
   const toggleSelectAll = (): void => {
     if (
@@ -234,7 +257,7 @@ export default function BranchList({ merchantId }: { merchantId: number }) {
       <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4 dark:border-gray-800">
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            Branchs
+            Branches
           </h3>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             List of branches
@@ -334,7 +357,7 @@ export default function BranchList({ merchantId }: { merchantId: number }) {
               size="sm"
               variant="primary"
               endIcon={<PlusIcon />}
-              onClick={()=> router.push(`/merchant/${encodeId(merchantId)}/branches/create`)}
+              onClick={() => router.push(`/merchant/${encodeId(merchantId)}/branches/create`)}
             >
               Add
             </Button>
@@ -675,7 +698,9 @@ export default function BranchList({ merchantId }: { merchantId: number }) {
                           <button className="text-xs flex w-full rounded-lg px-3 py-2 text-left font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
                             View More
                           </button>
-                          <button className="text-xs flex w-full rounded-lg px-3 py-2 text-left font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
+                          <button
+                            onClick={() => handleDelete(branch)}
+                            className="text-xs flex w-full rounded-lg px-3 py-2 text-left font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
                             Delete
                           </button>
                         </>

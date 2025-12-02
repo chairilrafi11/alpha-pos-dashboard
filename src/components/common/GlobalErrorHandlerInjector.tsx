@@ -8,7 +8,7 @@ export default function GlobalErrorHandlerInjector() {
     const { openModal } = useGlobalModal();
 
     useEffect(() => {
-        const handler = (title: string, content: string, type: 'error' | 'warning' | 'info') => {
+        const handler = (title: string, content: string, type: 'error' | 'warning' | 'info' | 'success') => {
             openModal({
                 title: title,
                 content: content,

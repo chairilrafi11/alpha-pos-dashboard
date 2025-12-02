@@ -3,7 +3,6 @@ import { ApiError } from '../utils/apiError';
 import { ResponseCode } from '@/types/shared/responseCode';
 import { PaginatedResponse } from '@/types/shared/commonModel';
 
-import { useGlobalModal } from '@/context/ModalContext';
 import toast from 'react-hot-toast';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -35,14 +34,12 @@ export function setGlobalErrorHandler(
 async function executeFetch<T>(props: ApiFetchProps): Promise<RawApiResponse<T>> {
   const token = getToken();
 
-  // 1. Persiapan Header
   const headers = {
     'Content-Type': 'application/json',
     ...(token && { Authorization: `Bearer ${token}` }),
     ...props.options?.headers,
   };
 
-  // 2. Eksekusi Fetch
   const response = await fetch(`${API_BASE_URL}${props.endpoint}`, {
     ...props.options,
     headers,
@@ -50,7 +47,6 @@ async function executeFetch<T>(props: ApiFetchProps): Promise<RawApiResponse<T>>
 
   let responseJson: RawApiResponse<T>;
 
-  // 3. Parsing JSON & Handle Error Parsing
   try {
     responseJson = await response.json();
   } catch (e) {
@@ -65,15 +61,11 @@ async function executeFetch<T>(props: ApiFetchProps): Promise<RawApiResponse<T>>
     throw error;
   }
 
-  // 4. Pengelompokan Logika Error (HTTP Status & API Response Code)
-  // Periksa status HTTP (4xx/5xx) atau response code API yang tidak sukses
   if (!response.ok || responseJson.response_code !== SUCCESS_CODE) {
 
-    // Tentukan pesan error mana yang akan digunakan
     const message = responseJson.response_message ||
       (response.ok ? 'Unknown API Error' : `HTTP Error: ${response.status}`);
 
-    // Tentukan response code mana yang akan digunakan
     const code = responseJson.response_code || 'HTTP_ERROR';
 
     const error = new ApiError(
@@ -89,8 +81,6 @@ async function executeFetch<T>(props: ApiFetchProps): Promise<RawApiResponse<T>>
 
   if (props.showSuccess) {
     toast.success(responseJson.response_message);
-    // globalShowPopup(responseJson.response_message, '', 'success',);
-
   }
 
   return responseJson;

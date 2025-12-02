@@ -38,3 +38,20 @@ export async function createBranch(merchantId: number, body: BranchCreateRequest
         throw error;
     }
 }
+
+export async function deleteBranch(merchantId: number, branchId: number): Promise<boolean> {
+    const endpoint = `/merchants/${merchantId}/branches/${branchId}`;
+    try {
+        const data = await apiFetch<boolean>({
+            endpoint,
+            options: {
+                method: 'DELETE',
+            },
+            showSuccess: true,
+        });
+
+        return data;
+    } catch (error) {
+        throw error;
+    }
+}
