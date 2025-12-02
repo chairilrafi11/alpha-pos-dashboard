@@ -7,6 +7,7 @@ import { AuthProvider } from '@/context/AuthContext';
 import { Toaster } from 'react-hot-toast';
 import { ModalProvider } from '@/context/ModalContext';
 import GlobalModalRenderer from '@/components/modal/GlobalModelRenderer';
+import GlobalErrorHandlerInjector from '@/components/common/GlobalErrorHandlerInjector';
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -20,9 +21,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${outfit.className} dark:bg-gray-900`}>
-        <Toaster position="top-right" />
+        <Toaster position="bottom-right" toastOptions={{ duration: 3000 }} />
         <AuthProvider>
           <ModalProvider>
+            <GlobalErrorHandlerInjector />
             <ThemeProvider>
               <SidebarProvider>{children}</SidebarProvider>
             </ThemeProvider>

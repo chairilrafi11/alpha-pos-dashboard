@@ -9,9 +9,12 @@ export async function getSuperAdminMetrix(): Promise<SuperAdminMetrix> {
     try {
         const endpoint = `/dashboard/super-admin`;
 
-        const data = await apiFetch<SuperAdminMetrix>(endpoint, {
-            method: 'GET',
-        });
+        const data = await apiFetch<SuperAdminMetrix>({
+            endpoint,
+            options: {
+                method: 'GET',
+            }
+        })
 
         return data;
     } catch (error) {

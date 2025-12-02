@@ -1,11 +1,10 @@
 'use client';
 
-import InvoiceListTable from "@/components/invoice/InvoiceList";
 import DetailMerchantMetrics from "@/components/merchant/detail/DetailMerchantMetrics";
-import SiteList from "@/components/merchant/detail/SiteLits";
 import React, { useEffect } from "react";
+import BranchList from "@/components/merchant/detail/BranchList";
 
-export default function MerchantDetailClient({ merchantId }: { merchantId: number}) {
+export default function MerchantDetailClient({ merchantId }: { merchantId: number }) {
 
     useEffect(() => {
         if (merchantId === null) {
@@ -17,8 +16,8 @@ export default function MerchantDetailClient({ merchantId }: { merchantId: numbe
 
     return (
         <div>
-            <DetailMerchantMetrics id={merchantId} />
-            <SiteList id={merchantId} />
+            <DetailMerchantMetrics merchantId={merchantId} />
+            <BranchList merchantId={merchantId} />
         </div>
     );
 }

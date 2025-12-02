@@ -1,4 +1,4 @@
-export interface Site {
+export interface Branch {
     id: number
     group_id: number
     business_type_id: number

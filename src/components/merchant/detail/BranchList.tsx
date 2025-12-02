@@ -3,11 +3,13 @@
 import TableDropdown from "@/components/common/TableDropdown";
 import Button from "@/components/ui/button/Button";
 import { PlusIcon } from "@/icons";
-import { getMerchantSites } from "@/services/merchantService";
-import { Site } from "@/types/merchant/site";
+import { getBranches } from "@/services/branchService";
+import { Branch } from "@/types/branch/branch";
 import { BaseParams, initialBaseParams, initialPageInfo, PaginatedResponse } from "@/types/shared/commonModel";
 import Link from "next/link";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { encodeId } from "@/utils/idHasher";
 
 interface SortState {
   sortBy: "name" | "phone";
@@ -85,8 +87,9 @@ const FilterDropdown: React.FC<{
   );
 };
 
-export default function SiteList({ id }: { id: number }) {
-  const [sites, setSites] = useState<PaginatedResponse<Site>>({
+export default function BranchList({ merchantId }: { merchantId: number }) {
+  const router = useRouter();
+  const [branches, setBranchs] = useState<PaginatedResponse<Branch>>({
     data: [],
     page_info: initialPageInfo,
   });
@@ -105,13 +108,13 @@ export default function SiteList({ id }: { id: number }) {
   const [showFilter, setShowFilter] = useState<boolean>(false);
   const itemsPerPage: number = 10;
 
-  const filteredInvoices: Site[] = useMemo(() => {
+  const filteredInvoices: Branch[] = useMemo(() => {
     return filterStatus === "All"
-      ? sites.data
-      : sites.data.filter((site) => site.status === filterStatus.toLowerCase());
-  }, [sites.data, filterStatus]);
+      ? branches.data
+      : branches.data.filter((branch) => branch.status === filterStatus.toLowerCase());
+  }, [branches.data, filterStatus]);
 
-  const searchedInvoices: Site[] = React.useMemo(() => {
+  const searchedInvoices: Branch[] = React.useMemo(() => {
     return filteredInvoices.filter(
       (invoice) =>
         invoice.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -119,7 +122,7 @@ export default function SiteList({ id }: { id: number }) {
     );
   }, [filteredInvoices, search]);
 
-  const sortedInvoices: Site[] = React.useMemo(() => {
+  const sortedInvoices: Branch[] = React.useMemo(() => {
     return [...searchedInvoices].sort((a, b) => {
       let valA: string | number = a[sort.sortBy];
       let valB: string | number = b[sort.sortBy];
@@ -136,7 +139,7 @@ export default function SiteList({ id }: { id: number }) {
     });
   }, [searchedInvoices, sort]);
 
-  const paginatedInvoices: Site[] = sortedInvoices.slice(
+  const paginatedInvoices: Branch[] = sortedInvoices.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -167,13 +170,13 @@ export default function SiteList({ id }: { id: number }) {
       try {
         // setIsLoading(true);
 
-        const data = await getMerchantSites(id, params);
+        const data = await getBranches(merchantId, params);
 
-        setSites(data);
+        setBranchs(data);
         // setRowsPerPage(data.page_info.page_size);
 
       } catch (error) {
-        console.error("Gagal memuat merchant sites:", error);
+        console.error("Gagal memuat merchant branches:", error);
       } finally {
         // setIsLoading(false);
       }
@@ -231,10 +234,10 @@ export default function SiteList({ id }: { id: number }) {
       <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4 dark:border-gray-800">
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            Sites
+            Branchs
           </h3>
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            List of sites
+            List of branches
           </p>
         </div>
         <div className="flex gap-3.5">
@@ -327,7 +330,12 @@ export default function SiteList({ id }: { id: number }) {
               </svg>
               Export
             </button>
-            <Button size="sm" variant="primary" endIcon={<PlusIcon />}>
+            <Button
+              size="sm"
+              variant="primary"
+              endIcon={<PlusIcon />}
+              onClick={()=> router.push(`/merchant/${encodeId(merchantId)}/branches/create`)}
+            >
               Add
             </Button>
           </div>
@@ -555,9 +563,9 @@ export default function SiteList({ id }: { id: number }) {
             </tr>
           </thead>
           <tbody className="divide-x divide-y divide-gray-200 dark:divide-gray-800">
-            {paginatedInvoices.map((site: Site) => (
+            {paginatedInvoices.map((branch: Branch) => (
               <tr
-                key={site.id}
+                key={branch.id}
                 className="transition hover:bg-gray-50 dark:hover:bg-gray-900"
               >
                 <td className="p-4 whitespace-nowrap">
@@ -567,18 +575,18 @@ export default function SiteList({ id }: { id: number }) {
                         <input
                           type="checkbox"
                           className="sr-only"
-                          checked={selected.includes(site.id)}
-                          onChange={() => toggleRow(site.id)}
+                          checked={selected.includes(branch.id)}
+                          onChange={() => toggleRow(branch.id)}
                         />
                         <span
-                          className={`flex h-4 w-4 items-center justify-center rounded-sm border-[1.25px] ${selected.includes(site.id)
+                          className={`flex h-4 w-4 items-center justify-center rounded-sm border-[1.25px] ${selected.includes(branch.id)
                             ? "border-brand-500 bg-brand-500"
                             : "bg-transparent border-gray-300 dark:border-gray-700"
                             }`}
                         >
                           <span
                             className={
-                              selected.includes(site.id) ? "" : "opacity-0"
+                              selected.includes(branch.id) ? "" : "opacity-0"
                             }
                           >
                             <svg
@@ -604,40 +612,40 @@ export default function SiteList({ id }: { id: number }) {
                       href="/single-invoice"
                       className="text-theme-sm font-medium text-gray-700 dark:text-gray-400"
                     >
-                      {site.name}
+                      {branch.name}
                     </Link>
                   </div>
                 </td>
                 <td className="p-4 whitespace-nowrap">
                   <span className="text-sm text-gray-700 dark:text-gray-400">
-                    {site.address}
+                    {branch.address}
                   </span>
                 </td>
                 <td className="p-4 whitespace-nowrap">
                   <p className="text-sm text-gray-700 dark:text-gray-400">
-                    {site.business_type_name}
+                    {branch.business_type_name}
                   </p>
                 </td>
                 <td className="p-4 whitespace-nowrap">
                   <p className="text-sm text-gray-700 dark:text-gray-400">
-                    {site.phone}
+                    {branch.phone}
                   </p>
                 </td>
                 <td className="p-4 whitespace-nowrap">
                   <p className="text-sm text-gray-700 dark:text-gray-400">
-                    {site.email}
+                    {branch.email}
                   </p>
                 </td>
                 <td className="p-4 whitespace-nowrap">
                   <span
-                    className={`text-theme-xs rounded-full px-2 py-0.5 font-medium ${site.status === "active"
+                    className={`text-theme-xs rounded-full px-2 py-0.5 font-medium ${branch.status === "active"
                       ? "bg-success-50 dark:bg-success-500/15 text-success-700 dark:text-success-500"
-                      : site.status === "unactive"
+                      : branch.status === "unactive"
                         ? "bg-error-50 text-error-600 dark:bg-error-500/15 dark:text-error-500"
                         : "bg-gray-100 text-gray-600 dark:bg-gray-500/15 dark:text-gray-400"
                       }`}
                   >
-                    {site.status}
+                    {branch.status}
                   </span>
                 </td>
                 <td className="p-4 whitespace-nowrap">
@@ -777,6 +785,6 @@ export default function SiteList({ id }: { id: number }) {
           </button>
         </div>
       </div>
-    </div>
+    </div >
   );
 };

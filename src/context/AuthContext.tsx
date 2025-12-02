@@ -78,7 +78,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (email: string, password: string) => {
     try {
       setIsLoading(true);
-      const { access_token } = await loginUser(email, password); // loginUser akan set token di cookie
+      const { access_token } = await loginUser({
+        email,
+        password,
+        platform: 'web'
+      });
 
       // Langkah KRUSIAL: Ambil data profile segera setelah token di set
       await loadProfile(access_token);

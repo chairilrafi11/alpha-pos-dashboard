@@ -6,11 +6,11 @@ import { formatIDR } from "@/utils/currencyFormatter";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
-export default function DetailMerchantMetrics({ id }: { id: number }) {
+export default function DetailMerchantMetrics({ merchantId }: { merchantId: number }) {
   const [merchantData, setMerchantData] = useState<MerchantDetail>();
 
   const fetchMerchantData = async () => {
-    const data = await getMerchantDetail(id);
+    const data = await getMerchantDetail(merchantId);
     setMerchantData(data);
   };
 
@@ -56,7 +56,7 @@ export default function DetailMerchantMetrics({ id }: { id: number }) {
       <div className="grid grid-cols-1 rounded-xl border border-gray-200 sm:grid-cols-2 lg:grid-cols-4 lg:divide-x lg:divide-y-0 dark:divide-gray-800 dark:border-gray-800">
         <div className="border-b p-5 sm:border-r lg:border-b-0">
           <p className="mb-1.5 text-sm text-gray-400 dark:text-gray-500">
-            Total Transactions Value 
+            Total Transactions Value
           </p>
           <h3 className="text-3xl text-gray-800 dark:text-white/90">{formatIDR(merchantData?.total_invoices_amount)}</h3>
         </div>
@@ -74,7 +74,7 @@ export default function DetailMerchantMetrics({ id }: { id: number }) {
         </div>
         <div className="p-5">
           <p className="mb-1.5 text-sm text-gray-400 dark:text-gray-500">
-            Sites
+            Branches
           </p>
           <h3 className="text-3xl text-gray-800 dark:text-white/90">
             {merchantData?.total_sites}

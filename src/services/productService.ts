@@ -10,8 +10,11 @@ export async function getProducts(): Promise<Product[]> {
     try {
         const endpoint = `/product`;
 
-        const data = await apiFetch<Product[]>(endpoint, {
-            method: 'GET',
+        const data = await apiFetch<Product[]>({
+            endpoint,
+            options: {
+                method: 'GET',
+            }
         });
 
         return data;

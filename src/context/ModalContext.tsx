@@ -2,30 +2,35 @@
 
 import React, { createContext, useState, useContext, ReactNode, useCallback } from 'react';
 
-// --- Interfaces ---
+export type ModalType = 'success' | 'info' | 'warning' | 'error' | 'confirm';
+
 interface ModalState {
     isOpen: boolean;
-    content?: ReactNode | null;
+    content?: string | null;
     title?: string | null;
     onConfirm?: () => void | null;
     autoCloseDelay?: number | null;
+    type: ModalType;
 }
 
 interface ModalContextType extends ModalState {
     openModal: (
-        content?: ReactNode | null,
-        title?: string | null,
-        onConfirm?: () => void | null,
-        autoCloseDelay?: number | null
+        options: {
+            content?: string | null;
+            title?: string | null;
+            onConfirm?: () => void | null;
+            autoCloseDelay?: number | null;
+            type: ModalType;
+        }
     ) => void
     closeModal: () => void
 }
 
-// Nilai default untuk Context
 const defaultState: ModalContextType = {
     isOpen: false,
     content: null,
-    title: 'Sukses',
+    title: null,
+    type: 'success',
     openModal: () => { },
     closeModal: () => { },
     autoCloseDelay: 300
@@ -33,42 +38,44 @@ const defaultState: ModalContextType = {
 
 export const ModalContext = createContext<ModalContextType>(defaultState);
 
-// --- Provider Component ---
 export const ModalProvider = ({ children }: { children: ReactNode }) => {
     const [modalState, setModalState] = useState<ModalState>({
         isOpen: false,
         content: null,
-        title: 'Sukses',
-        autoCloseDelay: 300,
+        title: null,
+        autoCloseDelay: 1300,
+        type: 'success',
     });
 
-    // Fungsi untuk membuka modal
     const openModal = useCallback((
-        content?: ReactNode | null,
-        title?: string | null,
-        onConfirm?: () => void,
-        autoCloseDelay?: number | null
+        options: {
+            content?: string | null;
+            title?: string | null;
+            onConfirm?: () => void | null;
+            autoCloseDelay?: number | null;
+            type: ModalType;
+        }
     ) => {
         setModalState({
             isOpen: true,
-            content,
-            title: title || 'Sukses',
-            onConfirm,
-            autoCloseDelay
+            content: options.content,
+            title: options.title || options.type.charAt(0).toUpperCase() + options.type.slice(1),
+            onConfirm: options.onConfirm,
+            autoCloseDelay: options.autoCloseDelay,
+            type: options.type,
         });
     }, []);
 
-    // Fungsi untuk menutup modal dan mereset state
     const closeModal = useCallback(() => {
         setModalState({
             isOpen: false,
             content: null,
-            title: '',
-            autoCloseDelay: null
+            title: null,
+            autoCloseDelay: null,
+            type: 'success',
         });
     }, []);
 
-    // Nilai Context yang akan diberikan ke komponen anak
     const contextValue = {
         ...modalState,
         openModal,
@@ -82,5 +89,4 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
     );
 };
 
-// --- Custom Hook untuk Kemudahan Akses ---
 export const useGlobalModal = () => useContext(ModalContext);
