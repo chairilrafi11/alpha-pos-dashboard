@@ -165,7 +165,6 @@ export default function BranchList({ merchantId }: { merchantId: number }) {
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   }, [currentPage, totalPages]);
 
-
   const fetchData = useCallback(
     async () => {
 

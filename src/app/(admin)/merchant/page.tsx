@@ -1,4 +1,3 @@
-import ComponentCard from "@/components/common/ComponentCard";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 
 import { Metadata } from "next";
@@ -16,9 +15,9 @@ export default function MerchantPage() {
     <div>
       <PageBreadcrumb pageTitle="Data Merchant" />
       <div className="space-y-5 sm:space-y-6">
-        <ComponentCard title="Data Merchant">
-          <DataTableMerchant />
-        </ComponentCard>
+        {/* <ComponentCard title="Data Merchant"> */}
+        <DataTableMerchant />
+        {/* </ComponentCard> */}
       </div>
     </div>
   );

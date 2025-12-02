@@ -6,7 +6,7 @@ import Badge from "../ui/badge/Badge";
 import Button from "../ui/button/Button";
 import { Table, TableHeader, TableRow, TableCell, TableBody } from "../ui/table";
 import Pagination from "../shared/Pagination";
-import { getUser } from "@/services/userService";
+import { getUsers } from "@/services/userService";
 import { globalConstant } from "@/types/shared/constants";
 import Image from "next/image";
 
@@ -43,8 +43,8 @@ export default function DataTableUser() {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const data = await getUser();
-        setUsersData(data);
+        const data = await getUsers({});
+        setUsersData(data.data);
       } catch (error) {
         setUsersData([]);
       } finally {

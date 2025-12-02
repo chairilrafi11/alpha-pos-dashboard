@@ -9,8 +9,8 @@ export interface User {
   gender: string
   dob: any
   phone: string
-  address: any
+  address: string
+  status: string
   created_at: string
-  updated_at: any
-  doc_detail: any[]
+  updated_at: string
 }
