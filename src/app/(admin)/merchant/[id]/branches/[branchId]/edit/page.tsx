@@ -6,22 +6,24 @@ import { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Alpha POS | Create Merchant Branch",
+  title: "Alpha POS | Edit Merchant Branch",
   description:
-    "Ini di halaman create merchant branch",
+    "Ini di halaman Edit merchant branch",
 };
 
-interface BranchCreatePageProps {
+interface BranchEditPageProps {
   params: {
-    id: string
+    id: string,
+    branchId: string
   };
 }
 
-export default async function CreateBranchPage({ params }: BranchCreatePageProps) {
+export default async function CreateBranchPage({ params }: BranchEditPageProps) {
   const hashedId = params.id;
   const merchantId = decodeId(hashedId);
+  const branchId = decodeId(params.branchId);
 
-  if (merchantId === null) {
+  if (merchantId === null || branchId === null) {
     return (
       <InvalidIdMessage
         title="ID Merchant Tidak Valid"
@@ -32,8 +34,8 @@ export default async function CreateBranchPage({ params }: BranchCreatePageProps
 
   return (
     <div>
-      <PageBreadcrumb pageTitle="Create Merchant Branch" />
-      <BranchFormCreate merchantId={merchantId} mode="create"/>
+      <PageBreadcrumb pageTitle="Edit Merchant Branch" />
+      <BranchFormCreate mode="update" merchantId={merchantId} branchId={branchId}/>
     </div>
   );
 }

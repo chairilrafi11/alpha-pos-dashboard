@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ComponentCard from "../common/ComponentCard";
 import Form from "../form/Form";
 import Input from "../form/input/InputField";
@@ -7,40 +7,84 @@ import TextArea from "../form/input/TextArea";
 import Label from "../form/Label";
 import Select from "../form/Select";
 import Button from "../ui/button/Button";
-import { useRouter } from "next/navigation";
-import { BranchCreateRequest } from "@/types/branch/branchCreateRequest";
-import { createBranch } from "@/services/branchService";
-import { useGlobalModal } from '@/context/ModalContext';
+import { BranchDataRequest } from "@/types/branch/branchCreateRequest";
+import { createBranch, getBranchDetail, updateBranch } from "@/services/branchService";
+import { BranchDetail } from "@/types/branch/branch";
 
-const initialFormState: BranchCreateRequest = {
+interface BranchFormProps {
+  merchantId: number;
+  branchId?: number;
+  mode: 'create' | 'update';
+}
+
+const initialFormState: BranchDataRequest = {
   name: '',
   email: '',
   phone: '',
   address: '',
-  business_type_id: 1,
+  business_type_id: 0,
   faktur_prefix: '',
   return_prefix: '',
   status: 'active',
-  group_id: 1,
-  payment_role_id: 1
+  group_id: 0,
+  payment_role_id: 0,
 };
 
-export default function BranchFormCreate({ merchantId }: { merchantId: number }) {
-  const { openModal } = useGlobalModal();
-  const router = useRouter();
-  const [formData, setFormData] = useState<BranchCreateRequest>(initialFormState);
+export default function BranchFormCreate({ merchantId, branchId, mode }: BranchFormProps) {
+  const [formData, setFormData] = useState<BranchDataRequest>(initialFormState);
   const [isLoading, setIsLoading] = useState(false);
-
   const businessTypeOptions = [
     { value: 1, label: "Restoran & Kafe" },
     { value: 2, label: "Retail & Toko" },
     { value: 3, label: "Jasa & Layanan" },
   ];
-
   const paymentTypeOptions = [
     { value: 1, label: "Free" },
     { value: 2, label: "Basic" },
   ];
+
+  const fetchData = useCallback(
+    async () => {
+      if (mode !== 'update' || !branchId) {
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+
+        const data = await getBranchDetail(merchantId, branchId!);
+        setBranchFormData(data);
+
+      } catch (error) {
+        console.error("Gagal memuat merchant branches:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [merchantId, branchId, mode, setFormData, setIsLoading],
+  );
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const setBranchFormData = (data: BranchDetail) => {
+    setFormData({
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      address: data.address,
+      business_type_id: data.business_type_id,
+      faktur_prefix: data.faktur_prefix,
+      return_prefix: data.return_prefix,
+      status: data.status,
+      group_id: data.group_id,
+      payment_role_id: data.payment_role_id
+    });
+
+    handleSelectBusinessTypeChange(data.business_type_id);
+    handleSelectPaymentTypeChange(data.payment_role_id);
+  }
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -84,9 +128,18 @@ export default function BranchFormCreate({ merchantId }: { merchantId: number })
     setIsLoading(true);
 
     try {
-      const result = await createBranch(merchantId, formData);
-      setIsLoading(false);
-      setFormData(initialFormState);
+      let result;
+
+      if (mode === 'create') {
+        result = await createBranch(merchantId, formData);
+        setFormData(initialFormState);
+
+      } else if (mode === 'update' && branchId) {
+        const result = await updateBranch(merchantId, branchId, formData);
+        // setBranchFormData(result);
+      } else {
+        throw new Error("Invalid mode or missing Branch ID for update.");
+      }
     } catch (error) {
     } finally {
       setIsLoading(false);
@@ -136,6 +189,7 @@ export default function BranchFormCreate({ merchantId }: { merchantId: number })
             <Select
               options={businessTypeOptions}
               placeholder="Select Business Type"
+              defaultValue={formData.business_type_id.toString()}
               onChange={handleSelectBusinessTypeChange}
               className="bg-gray-50 dark:bg-gray-800"
             />
@@ -146,6 +200,7 @@ export default function BranchFormCreate({ merchantId }: { merchantId: number })
             <Select
               options={paymentTypeOptions}
               placeholder="Select Payment Type"
+              defaultValue={formData.payment_role_id.toString()}
               onChange={handleSelectPaymentTypeChange}
               className="bg-gray-50 dark:bg-gray-800"
             />

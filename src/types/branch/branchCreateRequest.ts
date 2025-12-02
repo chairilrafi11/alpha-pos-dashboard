@@ -1,4 +1,4 @@
-export interface BranchCreateRequest {
+export interface BranchDataRequest {
     group_id: number
     business_type_id: number
     payment_role_id: number
