@@ -15,6 +15,7 @@ import TableDropdown from "../common/TableDropdown";
 import { encodeId } from "@/utils/idHasher";
 import { useGlobalModal } from "@/context/ModalContext";
 import { useRouter } from "next/navigation";
+import { PlusIcon } from "@/icons";
 
 interface Sort {
   key: keyof User;
@@ -104,6 +105,7 @@ export default function UserListTable() {
     limit: 10
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState(params.name);
   const [sort, setSort] = useState<Sort>({ key: "name", asc: true });
   const [page, setPage] = useState(1);
   const [perPage] = useState(10);
@@ -127,6 +129,26 @@ export default function UserListTable() {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if (searchQuery !== params.name) {
+        setParams(prev => ({
+          ...prev,
+          name: searchQuery,
+          page: 1,
+        }));
+      }
+
+    }, 500);
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchQuery]);
+
+  const handlerSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
 
   const handleDelete = (selectedUser: User) => {
     openModal({
@@ -216,8 +238,16 @@ export default function UserListTable() {
               />
             </svg>
           </Button>
-          <Link
-            href="/add-product"
+          <Button 
+            size="sm" 
+            variant="primary" 
+            endIcon={<PlusIcon />} 
+            onClick={() => router.push('/users/create')}
+          >
+            Add
+          </Button>
+          {/* <Link
+            href='/add-user'
             className="bg-brand-500 shadow-sm hover inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white transition hover:bg-brand-600"
           >
             <svg
@@ -236,7 +266,7 @@ export default function UserListTable() {
               />
             </svg>
             Add Product
-          </Link>
+          </Link> */}
         </div>
       </div>
       <div className="border-b border-gray-200 px-5 py-4 dark:border-gray-800">
@@ -263,6 +293,8 @@ export default function UserListTable() {
               type="text"
               placeholder="Search..."
               className="shadow-sm focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent py-2.5 pr-4 pl-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-none sm:w-[300px] sm:min-w-[300px] dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
+              value={searchQuery}
+              onChange={handlerSearch}
             />
           </div>
           <FilterDropdown

@@ -7,7 +7,7 @@ import { AuthProvider } from '@/context/AuthContext';
 import { Toaster } from 'react-hot-toast';
 import { ModalProvider } from '@/context/ModalContext';
 import GlobalModalRenderer from '@/components/modal/GlobalModelRenderer';
-import GlobalErrorHandlerInjector from '@/components/common/GlobalErrorHandlerInjector';
+import GlobalErrorHandlerInjector from '@/components/common/GlobalModalHandlerInjector';
 
 const outfit = Outfit({
   subsets: ["latin"],

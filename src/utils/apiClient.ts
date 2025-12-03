@@ -23,10 +23,20 @@ interface ApiFetchProps {
   options?: RequestInit;
 }
 
-let globalShowPopup: ((title: string, content: string, type: 'error' | 'warning' | 'info' | 'success') => void) | null = null;
+let globalShowPopup: ((
+  title: string,
+  content: string,
+  type: 'error' | 'warning' | 'info' | 'success',
+  autoClose: boolean
+) => void) | null = null;
 
-export function setGlobalErrorHandler(
-  handler: (title: string, content: string, type: 'error' | 'warning' | 'info' | 'success') => void
+export function setGlobalModalHandler(
+  handler: (
+    title: string,
+    content: string,
+    type: 'error' | 'warning' | 'info' | 'success',
+    autoClose: boolean
+  ) => void
 ) {
   globalShowPopup = handler;
 }
@@ -80,7 +90,16 @@ async function executeFetch<T>(props: ApiFetchProps): Promise<RawApiResponse<T>>
   }
 
   if (props.showSuccess) {
-    toast.success(responseJson.response_message);
+    if (globalShowPopup) {
+      globalShowPopup(
+        responseJson.response_message,
+        responseJson.response_message,
+        'success',
+        true
+      );
+    } else {
+      toast.success(responseJson.response_message);
+    }
   }
 
   return responseJson;
@@ -115,6 +134,6 @@ function handleError(error: ApiError) {
   if (globalShowPopup) {
     const title = `Oops, Terjadi Kesalahan!`;
     const content = error.message;
-    globalShowPopup(title, content, 'error',);
+    globalShowPopup(title, content, 'error', false);
   }
 }

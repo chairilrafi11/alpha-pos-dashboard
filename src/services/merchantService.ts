@@ -4,6 +4,8 @@ import { BaseParams, PaginatedResponse } from '@/types/shared/commonModel';
 import { buildQueryParams } from '@/utils/urlHelpers';
 import { MerchantDetail } from '@/types/merchant/merchantDetail';
 import { MerchantCreateRequest } from '@/types/merchant/merchantCreateRequest';
+import { User } from '@/types/user/user';
+import { OptionData } from '@/types/shared/optionData';
 
 export async function getMerchants(params: BaseParams): Promise<PaginatedResponse<Merchant>> {
     const queryString = buildQueryParams(params);
@@ -50,6 +52,26 @@ export async function createMerchant(body: MerchantCreateRequest): Promise<Merch
         });
 
         return data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getMerchantOptions(query: string): Promise<OptionData[]> {
+    try {
+        const queryString = buildQueryParams({ name: query });
+        const endpoint = `/merchants?${queryString}`;
+
+        const data = await apiFetchPaginated<User>({
+            endpoint,
+            options: {
+                method: 'GET',
+            }
+        });
+        return data.data.map(option => ({
+            value: option.id,
+            label: `${option.name}`,
+        }));
     } catch (error) {
         throw error;
     }

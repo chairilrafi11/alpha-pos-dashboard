@@ -3,6 +3,8 @@ import { BaseParams, PaginatedResponse } from '@/types/shared/commonModel';
 import { buildQueryParams } from '@/utils/urlHelpers';
 import { Branch, BranchDetail } from '@/types/branch/branch';
 import { BranchDataRequest } from '@/types/branch/branchCreateRequest';
+import { BranchOption } from '@/types/branch/branchOption';
+import { OptionData } from '@/types/shared/optionData';
 
 export async function getBranches(merchantId: number, params: BaseParams): Promise<PaginatedResponse<Branch>> {
     const queryString = buildQueryParams(params);
@@ -85,6 +87,25 @@ export async function deleteBranch(merchantId: number, branchId: number): Promis
         });
 
         return data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getBranchOptions(queryString: string): Promise<OptionData[]> {
+    const params = { name: queryString, limit: 20 };
+    const endpoint = `/branches/options?${buildQueryParams(params)}`;
+    try {
+        const data = await apiFetchPaginated<BranchOption>({
+            endpoint,
+            options: {
+                method: 'GET',
+            }
+        });
+        return data.data.map(option => ({
+            value: option.id,
+            label: `${option.name}`,
+        }))
     } catch (error) {
         throw error;
     }
