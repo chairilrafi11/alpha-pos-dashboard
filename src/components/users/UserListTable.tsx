@@ -16,6 +16,7 @@ import { encodeId } from "@/utils/idHasher";
 import { useGlobalModal } from "@/context/ModalContext";
 import { useRouter } from "next/navigation";
 import { PlusIcon } from "@/icons";
+import { getRoleBadgeColor } from "@/utils/colors";
 
 interface Sort {
   key: keyof User;
@@ -449,17 +450,17 @@ export default function UserListTable() {
                 </div>
               </th>
               <th
-                onClick={() => sortBy("gender")}
+                onClick={() => sortBy("role_name")}
                 className="cursor-pointer px-5 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400"
               >
                 <div className="flex items-center gap-3">
                   <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                    Gender
+                    Role
                   </p>
                   <span className="flex flex-col gap-0.5">
                     <svg
                       className={
-                        sort.key === "address" && sort.asc
+                        sort.key === "role_name" && sort.asc
                           ? "text-gray-500 dark:text-gray-400"
                           : "text-gray-300"
                       }
@@ -476,7 +477,7 @@ export default function UserListTable() {
                     </svg>
                     <svg
                       className={
-                        sort.key === "gender" && !sort.asc
+                        sort.key === "role_name" && !sort.asc
                           ? "text-gray-500 dark:text-gray-400"
                           : "text-gray-300"
                       }
@@ -580,9 +581,9 @@ export default function UserListTable() {
                 <td className="px-5 py-4 whitespace-nowrap">
                   <Badge
                     size="sm"
-                    color={user.gender == "L" ? "primary" : "warning"}
+                    color={getRoleBadgeColor(user.role_id)}
                   >
-                    {user.gender == "L" ? "male" : "female"}
+                    {user.role_name}
                   </Badge>
                 </td>
                 <td className="px-5 py-4 whitespace-nowrap">
