@@ -45,6 +45,14 @@ const navItems: NavItem[] = [
     path: "/merchant",
   },
   {
+    icon: <ListIcon />,
+    name: "Categories",
+    subItems: [
+      { name: "Overview", path: "/category/overview" },
+      { name: "List", path: "/category/list" },
+    ],
+  },
+  {
     icon: <TaskIcon />,
     name: "Products",
     subItems: [
