@@ -3,17 +3,27 @@ import { BadgeColor } from "@/components/ui/badge/Badge";
 export function getRoleBadgeColor(roleId: number): BadgeColor {
   switch (roleId) {
     case 1:
-      return "light"; 
+      return "light";
     case 2:
-      return "primary"; 
+      return "primary";
     case 3:
       return "info";
     case 4:
-      return "success"; 
+      return "success";
     case 5:
-      return "warning"; 
+      return "warning";
     case 6:
-      return "dark"; 
+      return "dark";
+    default:
+      return "dark";
+  }
+}
+export function getShiftingStatusBadgeColor(status: string): BadgeColor {
+  switch (status) {
+    case 'IN':
+      return "primary";
+    case "OUT":
+      return "success";
     default:
       return "dark";
   }

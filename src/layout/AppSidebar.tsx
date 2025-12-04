@@ -69,6 +69,14 @@ const navItems: NavItem[] = [
     ],
   },
   {
+    icon: <TaskIcon />,
+    name: "Shifting History",
+    subItems: [
+      { name: "Overview", path: "/shifting-history/overview" },
+      { name: "List", path: "/shifting-history/list" },
+    ],
+  },
+  {
     icon: <UserCircleIcon />,
     name: "Users",
     path: "/users",
