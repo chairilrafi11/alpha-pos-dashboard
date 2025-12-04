@@ -81,7 +81,7 @@ export default function UserFormCreateEdit({ userId, mode }: UserFormProps) {
       setIsLoading(true);
 
       try {
-        const branchOptions = await getBranchOptions('');
+        const branchOptions = await getBranchOptions({ name: '' });
         setDefaultBranchOptions(branchOptions);
 
         if (mode === 'update' && userId) {
@@ -213,7 +213,7 @@ export default function UserFormCreateEdit({ userId, mode }: UserFormProps) {
   };
 
   const loadBranchOptions: LoadOptionsType = (inputValue: string) => {
-    return getBranchOptions(inputValue);
+    return getBranchOptions({ name: inputValue });
   };
 
   if (isLoading) {

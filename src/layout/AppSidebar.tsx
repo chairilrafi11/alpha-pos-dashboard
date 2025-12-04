@@ -41,8 +41,16 @@ const navItems: NavItem[] = [
   },
   {
     icon: <BoxCubeIcon />,
-    name: "Merchant",
+    name: "Merchants",
     path: "/merchant",
+  },
+  {
+    icon: <TaskIcon />,
+    name: "Products",
+    subItems: [
+      { name: "Overview", path: "/product/overview" },
+      { name: "List", path: "/product/list" },
+    ],
   },
   {
     icon: <UserCircleIcon />,

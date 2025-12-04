@@ -43,8 +43,8 @@ export default function DataTableProduct() {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const data = await getProducts();
-        setProductsData(data);
+        const data = await getProducts({});
+        setProductsData(data.data);
       } catch (error) {
         setProductsData([]);
       } finally {
@@ -312,22 +312,22 @@ export default function DataTableProduct() {
                           {product.name}
                         </span>
                         <span className="block text-gray-500 text-theme-xs dark:text-gray-400">
-                          {product.description}
+                          {/* {product.descripdtion} */}
                         </span>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell className="px-4 py-4 font-medium text-gray-500 border border-gray-100 dark:border-white/[0.05] text-theme-xs dark:text-gray-400 whitespace-nowrap">
-                    <span> {product.category_name}</span>
+                    <span> {product.name}</span>
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap">
-                    {product.harga_beli}
+                    {product.branch_name}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap">
-                    {product.harga_beli}
+                    {product.buy_price}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap">
-                    {product.satuan_kecil}
+                    {product.sell_price}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap">
                     <Badge

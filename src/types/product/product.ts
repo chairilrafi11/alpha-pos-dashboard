@@ -1,18 +1,34 @@
 export interface Product {
-    id: number
-    category_id: number
-    site_id: number
-    external_id: string
-    status: string
-    barcode: any
-    name: string
-    satuan_kecil: string
-    harga_beli: number
-    harga_jual: number
-    image: string
-    description: any
-    qty_stock: number
-    created_at: string
-    updated_at: string
-    category_name: string
+  id: number
+  branch_id: number
+  branch_name: string
+  name: string
+  buy_price: string
+  sell_price: string
+  image: string
+  status: string
+  created_at: string
+  updated_at: any
+}
+
+export interface ProductDetail {
+  barcode: any
+  merchant_id: number
+  branch_id: number
+  branch_name: string
+  category_id: number
+  category_name: string
+  created_at: string
+  description: any
+  external_id: string
+  buy_price: number
+  sell_price: number
+  id: number
+  image: string
+  name: string
+  qty_stock: number
+  satuan_kecil: string
+  status: string
+  updated_at: string
+  merchant_name: string
 }

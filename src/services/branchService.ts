@@ -92,8 +92,7 @@ export async function deleteBranch(merchantId: number, branchId: number): Promis
     }
 }
 
-export async function getBranchOptions(queryString: string): Promise<OptionData[]> {
-    const params = { name: queryString, limit: 20 };
+export async function getBranchOptions(params: BaseParams): Promise<OptionData[]> {
     const endpoint = `/branches/options?${buildQueryParams(params)}`;
     try {
         const data = await apiFetchPaginated<BranchOption>({

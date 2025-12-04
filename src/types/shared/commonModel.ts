@@ -22,6 +22,10 @@ export interface BaseParams {
     limit?: number | string;
     search?: string | undefined;
     name?: string | undefined;
+    merchant_id?: number | undefined | string;
+    branch_id?: number | undefined | string;
+    category_id?: number | undefined;
+    status?: string | undefined;
 }
 
 export const initialBaseParams: BaseParams = {

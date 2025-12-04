@@ -3,11 +3,8 @@ import React, { useCallback, useEffect, useState } from "react";
 
 import Button from "../ui/button/Button";
 import Image from "next/image";
-import { User } from "@/types/user/user";
 import { globalConstant } from "@/types/shared/constants";
-import { BaseParams, initialBaseParams, initialPageInfo, PaginatedResponse } from "@/types/shared/commonModel";
-import { deleteUser, getUsers } from "@/services/userService";
-import Badge from "../ui/badge/Badge";
+import { BaseParams, initialPageInfo, PaginatedResponse } from "@/types/shared/commonModel";
 import Pagination from "../shared/Pagination";
 import { getNoRow } from "@/utils/pageIndexHelper";
 import TableDropdown from "../common/TableDropdown";
@@ -15,10 +12,12 @@ import { encodeId } from "@/utils/idHasher";
 import { useGlobalModal } from "@/context/ModalContext";
 import { useRouter } from "next/navigation";
 import { PlusIcon } from "@/icons";
-import { getRoleBadgeColor } from "@/utils/colors";
+import { Product } from "@/types/product/product";
+import { getProducts } from "@/services/productService";
+import { formatIDR } from "@/utils/currencyFormatter";
 
 interface Sort {
-  key: keyof User;
+  key: keyof Product;
   asc: boolean;
 }
 
@@ -93,10 +92,10 @@ const FilterDropdown: React.FC<{
   );
 };
 
-export default function UserListTable() {
+export default function ProductListTable() {
   const router = useRouter();
   const { openModal } = useGlobalModal();
-  const [users, setUsers] = useState<PaginatedResponse<User>>({
+  const [products, setProducts] = useState<PaginatedResponse<Product>>({
     data: [],
     page_info: initialPageInfo
   });
@@ -115,10 +114,9 @@ export default function UserListTable() {
     async () => {
       setIsLoading(true);
       try {
-        const data = await getUsers(params);
-        setUsers(data);
+        const data = await getProducts(params);
+        setProducts(data);
       } catch (error) {
-        console.error("Gagal memuat users:", error);
       } finally {
         setIsLoading(false);
       }
@@ -150,30 +148,30 @@ export default function UserListTable() {
     setSearchQuery(e.target.value);
   };
 
-  const handleDelete = (selectedUser: User) => {
+  const handleDelete = (selected: Product) => {
     openModal({
-      title: "Delete User",
-      content: `Are you sure you want to delete ${selectedUser.name}?`,
+      title: "Delete Product",
+      content: `Are you sure you want to delete ${selected.name}?`,
       type: "confirm",
       onConfirm: () => {
-        handleDeleteuser(selectedUser.id);
+        handleDeleteProduct(selected.id);
       },
     })
   }
 
-  const handleDeleteuser = async (userId: number) => {
+  const handleDeleteProduct = async (id: number) => {
     try {
-      await deleteUser(userId);
+      // await deleteUser(id);
 
       fetchData();
 
     } catch (error) {
-      console.error("Gagal menghapus user:", error);
+      console.error("Gagal menghapus product:", error);
     }
   };
 
   const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= users.page_info.total_page) {
+    if (page >= 1 && page <= products.page_info.total_page) {
       setParams(prev => ({
         ...prev,
         page: page
@@ -182,13 +180,13 @@ export default function UserListTable() {
   };
 
   const sortedProducts = () => {
-    return [...users.data].sort((a, b) => {
+    return [...products.data].sort((a, b) => {
       let valA = a[sort.key];
       let valB = b[sort.key];
-      // if (sort.key === "price") {
-      //   valA = parseFloat(String(valA).replace(/[^\d.]/g, ""));
-      //   valB = parseFloat(String(valB).replace(/[^\d.]/g, ""));
-      // }
+      if (sort.key === "buy_price" || sort.key === "sell_price") {
+        valA = parseFloat(String(valA).replace(/[^\d.]/g, ""));
+        valB = parseFloat(String(valB).replace(/[^\d.]/g, ""));
+      }
       if (valA < valB) return sort.asc ? -1 : 1;
       if (valA > valB) return sort.asc ? 1 : -1;
       return 0;
@@ -200,7 +198,7 @@ export default function UserListTable() {
     return sortedProducts().slice(start, start + perPage);
   };
 
-  const sortBy = (key: keyof User) => {
+  const sortBy = (key: keyof Product) => {
     setSort((prev) => ({
       key,
       asc: prev.key === key ? !prev.asc : true,
@@ -212,7 +210,7 @@ export default function UserListTable() {
       <div className="flex flex-col justify-between gap-5 border-b border-gray-200 px-5 py-4 sm:flex-row sm:items-center dark:border-gray-800">
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            User List
+            Product List
           </h3>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             Track your store&apos;s progress to boost your sales.
@@ -238,11 +236,11 @@ export default function UserListTable() {
               />
             </svg>
           </Button>
-          <Button 
-            size="sm" 
-            variant="primary" 
-            endIcon={<PlusIcon />} 
-            onClick={() => router.push('/users/create')}
+          <Button
+            size="sm"
+            variant="primary"
+            endIcon={<PlusIcon />}
+            onClick={() => router.push('/product/create')}
           >
             Add
           </Button>
@@ -357,17 +355,17 @@ export default function UserListTable() {
                 </div>
               </th>
               <th
-                onClick={() => sortBy("email")}
+                onClick={() => sortBy("name")}
                 className="cursor-pointer px-5 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400"
               >
                 <div className="flex items-center gap-3">
                   <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                    Email
+                    Harga Beli
                   </p>
                   <span className="flex flex-col gap-0.5">
                     <svg
                       className={
-                        sort.key === "email" && sort.asc
+                        sort.key === "buy_price" && sort.asc
                           ? "text-gray-500 dark:text-gray-400"
                           : "text-gray-300 dark:text-gray-400/50"
                       }
@@ -384,7 +382,7 @@ export default function UserListTable() {
                     </svg>
                     <svg
                       className={
-                        sort.key === "email" && !sort.asc
+                        sort.key === "buy_price" && !sort.asc
                           ? "text-gray-500 dark:text-gray-400"
                           : "text-gray-300 dark:text-gray-400/50"
                       }
@@ -403,17 +401,17 @@ export default function UserListTable() {
                 </div>
               </th>
               <th
-                onClick={() => sortBy("phone")}
+                onClick={() => sortBy("sell_price")}
                 className="cursor-pointer px-5 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400"
               >
                 <div className="flex items-center gap-3">
                   <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                    Phone
+                    Harga Jual
                   </p>
                   <span className="flex flex-col gap-0.5">
                     <svg
                       className={
-                        sort.key === "phone" && sort.asc
+                        sort.key === "sell_price" && sort.asc
                           ? "text-gray-500 dark:text-gray-400"
                           : "text-gray-300 dark:text-gray-400/50"
                       }
@@ -430,7 +428,7 @@ export default function UserListTable() {
                     </svg>
                     <svg
                       className={
-                        sort.key === "phone" && !sort.asc
+                        sort.key === "sell_price" && !sort.asc
                           ? "text-gray-500 dark:text-gray-400"
                           : "text-gray-300 dark:text-gray-400/50"
                       }
@@ -449,17 +447,17 @@ export default function UserListTable() {
                 </div>
               </th>
               <th
-                onClick={() => sortBy("role_name")}
+                onClick={() => sortBy("branch_name")}
                 className="cursor-pointer px-5 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400"
               >
                 <div className="flex items-center gap-3">
                   <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                    Role
+                    Branch
                   </p>
                   <span className="flex flex-col gap-0.5">
                     <svg
                       className={
-                        sort.key === "role_name" && sort.asc
+                        sort.key === "branch_name" && sort.asc
                           ? "text-gray-500 dark:text-gray-400"
                           : "text-gray-300"
                       }
@@ -476,7 +474,7 @@ export default function UserListTable() {
                     </svg>
                     <svg
                       className={
-                        sort.key === "role_name" && !sort.asc
+                        sort.key === "branch_name" && !sort.asc
                           ? "text-gray-500 dark:text-gray-400"
                           : "text-gray-300"
                       }
@@ -505,9 +503,9 @@ export default function UserListTable() {
             </tr>
           </thead>
           <tbody className="divide-x divide-y divide-gray-200 dark:divide-gray-800">
-            {paginatedProducts().map((user, index) => (
+            {paginatedProducts().map((product, index) => (
               <tr
-                key={user.id}
+                key={product.id}
                 className="transition hover:bg-gray-50 dark:hover:bg-gray-900"
               >
                 <td className="w-14 px-5 py-4 whitespace-nowrap">
@@ -515,18 +513,18 @@ export default function UserListTable() {
                   {/* <input
                       type="checkbox"
                       className="sr-only"
-                      checked={selected.includes(user.id)}
-                      onChange={() => toggleSelect(user.id)}
+                      checked={selected.includes(product.id)}
+                      onChange={() => toggleSelect(product.id)}
                     />
                     <span
-                      className={`flex h-4 w-4 items-center justify-center rounded-sm border-[1.25px] ${selected.includes(user.id)
+                      className={`flex h-4 w-4 items-center justify-center rounded-sm border-[1.25px] ${selected.includes(product.id)
                         ? "border-brand-500 bg-brand-500"
                         : "bg-transparent border-gray-300 dark:border-gray-700"
                         }`}
                     >
                       <span
                         className={
-                          selected.includes(user.id) ? "" : "opacity-0"
+                          selected.includes(product.id) ? "" : "opacity-0"
                         }
                       >
                         <svg
@@ -548,7 +546,7 @@ export default function UserListTable() {
                     </span> */}
                   {/* </label> */}
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {getNoRow(index, users.page_info.page_number, users.page_info.page_size)}
+                    {getNoRow(index, products.page_info.page_number, products.page_info.page_size)}
                   </p>
                 </td>
                 <td className="px-5 py-4 whitespace-nowrap">
@@ -563,36 +561,33 @@ export default function UserListTable() {
                       />
                     </div>
                     <span className="text-sm font-medium text-gray-700 dark:text-gray-400">
-                      {user.name}
+                      {product.name}
                     </span>
                   </div>
                 </td>
                 <td className="px-5 py-4 whitespace-nowrap">
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {user.email}
+                    {formatIDR(product.buy_price)}
                   </p>
                 </td>
                 <td className="px-5 py-4 whitespace-nowrap">
                   <p className="text-sm text-gray-700 dark:text-gray-400">
-                    {user.phone}
+                    {formatIDR(product.sell_price)}
                   </p>
                 </td>
                 <td className="px-5 py-4 whitespace-nowrap">
-                  <Badge
-                    size="sm"
-                    color={getRoleBadgeColor(user.role_id)}
-                  >
-                    {user.role_name}
-                  </Badge>
+                  <p className="text-sm text-gray-700 dark:text-gray-400">
+                    {product.branch_name}
+                  </p>
                 </td>
                 <td className="px-5 py-4 whitespace-nowrap">
                   <span
-                    className={`text-xs rounded-full px-2 py-0.5 font-medium ${user.status === "active"
+                    className={`text-xs rounded-full px-2 py-0.5 font-medium ${product.status === "active"
                       ? "bg-green-50 dark:bg-green-500/15 text-green-700 dark:text-green-500"
                       : "bg-red-50 dark:bg-red-500/15 text-red-700 dark:text-red-500"
                       }`}
                   >
-                    {user.status}
+                    {product.status}
                   </span>
                 </td>
                 <td className="p-4 whitespace-nowrap">
@@ -620,13 +615,19 @@ export default function UserListTable() {
                       dropdownContent={
                         <>
                           <button
-                            onClick={() => router.push(`/users/${encodeId(user.id)}/edit`)}
+                            onClick={() => router.push(`/product/${encodeId(product.id)}`)}
                             className="text-xs flex w-full rounded-lg px-3 py-2 text-left font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
                           >
                             View More
                           </button>
                           <button
-                            onClick={() => handleDelete(user)}
+                            onClick={() => router.push(`/product/${encodeId(product.id)}/edit`)}
+                            className="text-xs flex w-full rounded-lg px-3 py-2 text-left font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(product)}
                             className="text-xs flex w-full rounded-lg px-3 py-2 text-left font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
                             Delete
                           </button>
@@ -645,12 +646,12 @@ export default function UserListTable() {
           {/* Left side: Showing entries */}
           <div className="pb-3 xl:pb-0">
             <p className="pb-3 text-sm font-medium text-center text-gray-500 border-b border-gray-100 dark:border-gray-800 dark:text-gray-400 xl:border-b-0 xl:pb-0 xl:text-left">
-              Showing {users.page_info.page_number} to {users.page_info.total_page} of {users.page_info.total_data} entries
+              Showing {products.page_info.page_number} to {products.page_info.total_page} of {products.page_info.total_data} entries
             </p>
           </div>
           <Pagination
-            currentPage={users.page_info.page_number}
-            totalPages={users.page_info.total_page}
+            currentPage={products.page_info.page_number}
+            totalPages={products.page_info.total_page}
             onPageChange={handlePageChange}
           />
         </div>
