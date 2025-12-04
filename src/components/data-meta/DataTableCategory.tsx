@@ -7,11 +7,10 @@ import { Table, TableHeader, TableRow, TableCell, TableBody } from "../ui/table"
 import Pagination from "../shared/Pagination";
 import { globalConstant } from "@/types/shared/constants";
 import Image from "next/image";
-import { getMerchant } from "@/services/merchantService";
 import { Merchant } from "@/types/merchant/merchant";
 import { Category } from "@/types/category/category";
-import { getCategory } from "@/services/categoryService";
 import SpinnerTwo from "@/app/(admin)/(ui-elements)/spinners/SpinnerTwo";
+import { getCategories } from "@/services/categoryService";
 
 
 export default function DataTableCategory() {
@@ -46,8 +45,8 @@ export default function DataTableCategory() {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const data = await getCategory();
-        setCategoriesData(data);
+        const data = await getCategories({});
+        setCategoriesData(data.data);
       } catch (error) {
         setCategoriesData([]);
       } finally {
@@ -284,7 +283,7 @@ export default function DataTableCategory() {
                     </div>
                   </TableCell>
                   <TableCell className="px-4 py-4 font-medium text-gray-500 border border-gray-100 dark:border-white/[0.05] text-theme-xs dark:text-gray-400 whitespace-nowrap">
-                    <span> {category.site_id}</span>
+                    <span> {category.branch_name}</span>
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap">
                     {category.threshold_harga_percentage}

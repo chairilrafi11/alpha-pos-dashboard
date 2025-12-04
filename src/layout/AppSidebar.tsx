@@ -61,6 +61,14 @@ const navItems: NavItem[] = [
     ],
   },
   {
+    icon: <CartIcon />,
+    name: "Invoices",
+    subItems: [
+      { name: "Overview", path: "/invoices/overview" },
+      { name: "List", path: "/invoices/list" },
+    ],
+  },
+  {
     icon: <UserCircleIcon />,
     name: "Users",
     path: "/users",
