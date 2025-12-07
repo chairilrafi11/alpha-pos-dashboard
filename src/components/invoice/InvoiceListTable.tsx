@@ -94,7 +94,7 @@ const FilterDropdown: React.FC<{
 export default function InvoiceListTable() {
   const router = useRouter();
   const { openModal } = useGlobalModal();
-  const [categories, setCategories] = useState<PaginatedResponse<Invoice>>({
+  const [invoices, setInvoices] = useState<PaginatedResponse<Invoice>>({
     data: [],
     page_info: initialPageInfo
   });
@@ -114,7 +114,7 @@ export default function InvoiceListTable() {
       setIsLoading(true);
       try {
         const data = await getInvoices(params);
-        setCategories(data);
+        setInvoices(data);
       } catch (error) {
       } finally {
         setIsLoading(false);
@@ -169,7 +169,7 @@ export default function InvoiceListTable() {
   };
 
   const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= categories.page_info.total_page) {
+    if (page >= 1 && page <= invoices.page_info.total_page) {
       setParams(prev => ({
         ...prev,
         page: page
@@ -178,7 +178,7 @@ export default function InvoiceListTable() {
   };
 
   const sortedCategories = () => {
-    return [...categories.data].sort((a, b) => {
+    return [...invoices.data].sort((a, b) => {
       let valA = a[sort.key];
       let valB = b[sort.key];
       if (sort.key === "amount") {
@@ -487,7 +487,7 @@ export default function InvoiceListTable() {
               >
                 <td className="w-14 px-5 py-4 whitespace-nowrap">
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {getNoRow(index, categories.page_info.page_number, categories.page_info.page_size)}
+                    {getNoRow(index, invoices.page_info.page_number, invoices.page_info.page_size)}
                   </p>
                 </td>
                 <td className="px-5 py-4 whitespace-nowrap">
@@ -571,12 +571,12 @@ export default function InvoiceListTable() {
           {/* Left side: Showing entries */}
           <div className="pb-3 xl:pb-0">
             <p className="pb-3 text-sm font-medium text-center text-gray-500 border-b border-gray-100 dark:border-gray-800 dark:text-gray-400 xl:border-b-0 xl:pb-0 xl:text-left">
-              Showing {categories.page_info.page_number} to {categories.page_info.total_page} of {categories.page_info.total_data} entries
+              Showing {invoices.page_info.page_number} to {invoices.page_info.total_page} of {invoices.page_info.total_data} entries
             </p>
           </div>
           <Pagination
-            currentPage={categories.page_info.page_number}
-            totalPages={categories.page_info.total_page}
+            currentPage={invoices.page_info.page_number}
+            totalPages={invoices.page_info.total_page}
             onPageChange={handlePageChange}
           />
         </div>
