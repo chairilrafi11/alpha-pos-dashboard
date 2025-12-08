@@ -14,6 +14,7 @@ import { getInvoices } from "@/services/invoiceService";
 import { Invoice } from "@/types/invoice/invoice";
 import { dateFormatReadable } from "@/utils/dateFormatter";
 import { formatIDR } from "@/utils/currencyFormatter";
+import CustomLoadingPage from "../common/CustomLoadingPage";
 
 interface Sort {
   key: keyof Invoice;
@@ -181,7 +182,7 @@ export default function InvoiceListTable() {
     return [...invoices.data].sort((a, b) => {
       let valA = a[sort.key];
       let valB = b[sort.key];
-      if (sort.key === "amount") {
+      if (sort.key === "total_invoice") {
         valA = parseFloat(String(valA).replace(/[^\d.]/g, ""));
         valB = parseFloat(String(valB).replace(/[^\d.]/g, ""));
       }
@@ -202,6 +203,15 @@ export default function InvoiceListTable() {
       asc: prev.key === key ? !prev.asc : true,
     }));
   };
+
+  const handleRowClick = (invoiceId: number) => {
+    const hashedId = encodeId(invoiceId);
+    router.push(`/invoices/${hashedId}`);
+  };
+
+  if (isLoading) {
+    return <CustomLoadingPage />;
+  }
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
@@ -378,17 +388,17 @@ export default function InvoiceListTable() {
                 </div>
               </th>
               <th
-                onClick={() => sortBy("amount")}
+                onClick={() => sortBy("total_invoice")}
                 className="cursor-pointer px-5 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400"
               >
                 <div className="flex items-center gap-3">
                   <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                    Total Amount
+                    Total Invoice
                   </p>
                   <span className="flex flex-col gap-0.5">
                     <svg
                       className={
-                        sort.key === "amount" && sort.asc
+                        sort.key === "total_invoice" && sort.asc
                           ? "text-gray-500 dark:text-gray-400"
                           : "text-gray-300"
                       }
@@ -405,7 +415,7 @@ export default function InvoiceListTable() {
                     </svg>
                     <svg
                       className={
-                        sort.key === "amount" && !sort.asc
+                        sort.key === "total_invoice" && !sort.asc
                           ? "text-gray-500 dark:text-gray-400"
                           : "text-gray-300"
                       }
@@ -483,6 +493,7 @@ export default function InvoiceListTable() {
             {paginatedCategories().map((invoice, index) => (
               <tr
                 key={invoice.id}
+                onClick={() => handleRowClick(invoice.id)}
                 className="transition hover:bg-gray-50 dark:hover:bg-gray-900"
               >
                 <td className="w-14 px-5 py-4 whitespace-nowrap">
@@ -502,7 +513,7 @@ export default function InvoiceListTable() {
                 </td>
                 <td className="px-5 py-4 whitespace-nowrap">
                   <p className="text-sm text-gray-700 dark:text-gray-400">
-                    {formatIDR(invoice.amount)}
+                    {formatIDR(invoice.total_invoice)}
                   </p>
                 </td>
                 <td className="px-5 py-4 whitespace-nowrap">
