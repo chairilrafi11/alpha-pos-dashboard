@@ -18,6 +18,35 @@ export function getRoleBadgeColor(roleId: number): BadgeColor {
       return "dark";
   }
 }
+
+export function getOrderWorkflowBadgeColor(workflowName: string): BadgeColor {
+  switch (workflowName) {
+    case "inputed order":
+      return "info";
+    case "kitchen":
+      return "primary";
+    case "delivered":
+      return "warning";
+    case "invoiced":
+      return "success";
+    default:
+      return "dark";
+  }
+}
+
+export function getOrderStatusBadgeColor(status: string): BadgeColor {
+  switch (status) {
+    case "processing":
+      return "info";
+    case "canceled":
+      return "error";
+    case "closed":
+      return "success";
+    default:
+      return "dark";
+  }
+}
+
 export function getShiftingStatusBadgeColor(status: string): BadgeColor {
   switch (status) {
     case 'IN':
