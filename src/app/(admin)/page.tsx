@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import DashboardSuperAdmin from "@/components/dashboard/DashboardSuperAdmin";
+import DashboardMain from "@/components/dashboard/DashboardMain";
 
 export const metadata: Metadata = {
   title:
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <div>
-      <DashboardSuperAdmin />
+      <DashboardMain />
     </div>
   );
 }
