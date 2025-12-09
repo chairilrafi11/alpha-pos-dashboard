@@ -3,7 +3,6 @@ import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 
 import { Metadata } from "next";
 import React from "react";
-import DataTableUser from "@/components/users/DataTableUser";
 import DataTableCategory from "@/components/data-meta/DataTableCategory";
 
 export const metadata: Metadata = {

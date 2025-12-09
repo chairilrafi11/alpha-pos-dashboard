@@ -1,5 +1,15 @@
 import { BadgeColor } from "@/components/ui/badge/Badge";
 
+export function getGenderBadgeColor(gender: string): BadgeColor {
+  switch (gender) {
+    case "L":
+      return "info";
+    case "P":
+      return "warning";
+    default:
+      return "dark";
+  }
+}
 export function getRoleBadgeColor(roleId: number): BadgeColor {
   switch (roleId) {
     case 1:
