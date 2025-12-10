@@ -12,6 +12,7 @@ export async function getBranches(merchantId: number, params: BaseParams): Promi
     try {
         const data = await apiFetchPaginated<Branch>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'GET',
             }
@@ -28,6 +29,7 @@ export async function getBranchDetail(merchantId: number, branchId: number): Pro
     try {
         const data = await apiFetch<BranchDetail>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'GET',
             }
@@ -44,9 +46,10 @@ export async function createBranch(merchantId: number, body: BranchDataRequest):
     try {
         const data = await apiFetch<Branch>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'POST',
-                body: JSON.stringify(body),
+                body: body,
             },
             showSuccess: true,
         });
@@ -62,9 +65,10 @@ export async function updateBranch(merchantId: number, branchId: number, body: B
     try {
         const data = await apiFetch<BranchDetail>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'PUT',
-                body: JSON.stringify(body),
+                body: body,
             },
             showSuccess: true,
         });
@@ -80,6 +84,7 @@ export async function deleteBranch(merchantId: number, branchId: number): Promis
     try {
         const data = await apiFetch<boolean>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'DELETE',
             },
@@ -97,6 +102,7 @@ export async function getBranchOptions(params: BaseParams): Promise<OptionData[]
     try {
         const data = await apiFetchPaginated<BranchOption>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'GET',
             }

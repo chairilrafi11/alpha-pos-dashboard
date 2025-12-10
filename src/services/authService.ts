@@ -26,18 +26,17 @@ export async function loginUser(body: SignInRequest): Promise<LoginResponse> {
   try {
     const data = await apiFetch<LoginResponse>({
       endpoint: '/sign-in',
+      endpointRoleType: 'base',
       options: {
         method: 'POST',
-        body: JSON.stringify(body),
+        body: body,
       },
     });
 
     setToken(data.access_token);
 
     return data;
-
   } catch (error) {
-
     throw error;
   }
 }
@@ -49,6 +48,7 @@ export function logoutUser(): void {
 export async function getProfile(): Promise<UserProfileResponse> {
   const profile = await apiFetch<UserProfileResponse>({
     endpoint: '/profile',
+    endpointRoleType: 'base',
     options: {
       method: 'GET',
     },

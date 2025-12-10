@@ -1,83 +1,82 @@
 import React from "react";
 import Badge from "../ui/badge/Badge";
-import { PlatformSummary } from "@/types/dashboard/DashbordAdminMetrics";
 import { formatIDR } from "@/utils/currencyFormatter";
+import { GroupSummary } from "@/types/dashboard/DashboardGroupMetrics";
 
 type Props = {
-  platformSummary: PlatformSummary | undefined;
+  summary: GroupSummary | undefined;
 };
 
-export const AnalyticsMetrics = ({ platformSummary }: Props) => {
+export const ClientAnalyticsMetrics = ({ summary }: Props) => {
   //? Set Data
   const data = [
     {
       id: 1,
-      title: "Total Users",
-      value: platformSummary?.total_users,
-      change: "+20%",
+      title: "Total Net Revenue",
+      value: formatIDR(summary?.net_revenue),
+      change: summary?.net_revenue_change,
       direction: "up",
-      comparisonText: "vs last month",
+      comparisonText: "",
     },
     {
       id: 2,
-      title: "Total Merchants",
-      value: platformSummary?.total_merchants,
-      change: "+4%",
+      title: "Total Orders",
+      value: summary?.total_orders,
+      change: summary?.total_orders_change,
       direction: "up",
-      comparisonText: "vs last month",
+      comparisonText: "",
     },
     {
       id: 3,
-      title: "Total Branches",
-      value: platformSummary?.total_branches,
-      change: "-1.59%",
-      direction: "down",
-      comparisonText: "vs last month",
+      title: "Average Orders",
+      value: formatIDR(summary?.average_order_value),
+      change: summary?.aov_change,
+      direction: "up",
+      comparisonText: "",
     },
     {
       id: 4,
-      title: "Total Category",
-      value: platformSummary?.total_category,
-      change: "+20%",
+      title: "Total Gross Sales",
+      value: formatIDR(summary?.total_gross_sales),
+      change: summary?.total_gross_sales_change,
       direction: "up",
-      comparisonText: "vs last month",
+      comparisonText: "",
     },
     {
       id: 5,
-      title: "Total Product",
-      value: platformSummary?.total_products,
-      change: "+20%",
+      title: "Total Items Sold",
+      value: summary?.total_items_sold,
+      change: summary?.total_items_sold_change,
       direction: "up",
-      comparisonText: "vs last month",
+      comparisonText: "",
     },
     {
       id: 6,
-      title: "Total Transactions",
-      value: platformSummary?.total_transactions,
-      change: "+20%",
+      title: "Total Discount",
+      value: formatIDR(summary?.total_discount),
+      change: summary?.total_discount_change,
       direction: "up",
-      comparisonText: "vs last month",
+      comparisonText: "",
     },
     {
       id: 7,
-      title: "Total Transactions Value",
-      value: formatIDR(platformSummary?.total_transaction_value),
-      change: "+20%",
+      title: "Total User",
+      value: summary?.total_users,
+      // change: summary?.total_discount_change,
       direction: "up",
-      comparisonText: "vs last month",
+      comparisonText: "",
     },
     {
       id: 8,
-      title: "Total Suppliers",
-      value: platformSummary?.total_suppliers,
-      change: "-1.59%",
-      direction: "down",
-      comparisonText: "vs last month",
+      title: "Total Products",
+      value: summary?.total_products,
+      // change: summary?.total_discount_change,
+      direction: "up",
+      comparisonText: "",
     },
   ]
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 xl:grid-cols-4">
-      {/* <!-- Metric Item Start --> */}
       {data.map((item) => (
         <div
           key={item.id}
@@ -111,10 +110,8 @@ export const AnalyticsMetrics = ({ platformSummary }: Props) => {
           </div>
         </div>
       ))}
-
-      {/* <!-- Metric Item End --> */}
     </div>
   );
 };
 
-export default AnalyticsMetrics;
+export default ClientAnalyticsMetrics;

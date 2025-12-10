@@ -1,21 +1,16 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import MonthlyTarget from "@/components/ecommerce/MonthlyTarget";
-import MonthlySalesChart from "@/components/ecommerce/MonthlySalesChart";
-import StatisticsChart from "@/components/ecommerce/StatisticsChart";
-import { SuperAdminMetrix } from "@/types/dashboard/SuperAdminMetrix";
-import { getSuperAdminMetrix } from "@/services/dashboardService";
-import { SuperAdminMetrics } from "@/components/dashboard/SuperAdminMetrix";
+import { DashboardAdminMetrics } from "@/types/dashboard/DashbordAdminMetrics";
+import { getSuperAdminMetrix } from "@/services/admin/dashboardService";
 import AnalyticsMetrics from "./AnalyticsMetrics";
 import { OrderStatisticsChart } from "./OrderStatisticChart";
-import { SessionPlatformChart } from "./SessionPlatformChart";
 import { SessionsPieChart } from "./SessionsPieChart";
 import { TopMerchantList } from "./TopMerchantList";
 import { TopProductList } from "./TopProductList";
 
 export default function DashboardSuperAdmin() {
-  const [data, setData] = useState<SuperAdminMetrix>();
+  const [data, setData] = useState<DashboardAdminMetrics>();
   const [isLoading, setIsLoading] = useState(true);
 
   const params = useMemo(() => {

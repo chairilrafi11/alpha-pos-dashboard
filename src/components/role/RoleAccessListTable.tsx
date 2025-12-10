@@ -9,7 +9,7 @@ import CustomLoadingPage from "../common/CustomLoadingPage";
 import { RoleAccess } from "@/types/role/roleAccess";
 import { Role } from "@/types/role/role";
 import { OptionData } from "@/types/shared/optionData";
-import { getRoleAccess, getRoles, syncRoleAccess } from "@/services/roleService";
+import { getRoleAccess, getRoles, syncRoleAccess } from "@/services/admin/roleService";
 import { RoleAccessDataRequest } from "@/types/role/roleAccessDataRequest";
 import Label from "../form/Label";
 import Select from "../form/Select";

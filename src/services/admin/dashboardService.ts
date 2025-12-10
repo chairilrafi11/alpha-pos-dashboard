@@ -3,14 +3,15 @@
 import { apiFetch } from '@/utils/apiClient';
 import { ApiError } from '@/utils/apiError';
 import toast from 'react-hot-toast';
-import { SuperAdminMetrix } from '@/types/dashboard/SuperAdminMetrix';
+import { DashboardAdminMetrics } from '@/types/dashboard/DashbordAdminMetrics';
 
-export async function getSuperAdminMetrix(): Promise<SuperAdminMetrix> {
+export async function getSuperAdminMetrix(): Promise<DashboardAdminMetrics> {
     try {
         const endpoint = `/dashboard/super-admin`;
 
-        const data = await apiFetch<SuperAdminMetrix>({
+        const data = await apiFetch<DashboardAdminMetrics>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'GET',
             }

@@ -1,12 +1,11 @@
 "use client";
 import React, { useState } from "react";
-import { ArrowDownIcon, ArrowUpIcon } from "../../icons";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { MoreDotIcon } from "@/icons";
 import Image from "next/image";
-import { TopProduct } from "@/types/dashboard/SuperAdminMetrix";
 import { formatIDR } from "@/utils/currencyFormatter";
+import { TopProduct } from "@/types/dashboard/topProduct";
 
 type Props = {
   topProductList: TopProduct[] | undefined;
@@ -15,10 +14,13 @@ type Props = {
 const WatchlistItem: React.FC<TopProduct> = ({
   id,
   name,
-  image,
+  image_dir,
   site_name,
-  harga_jual,
-  total_sold,
+  sell_price,
+  buy_price,
+  total_items_sold,
+  total_revenue,
+  total_profit,
 }) => {
   return (
     <div className="flex items-center justify-between pt-4 pb-4 border-b border-gray-200 first:pt-0 last:border-b-0 last:pb-0 dark:border-gray-800">
@@ -37,11 +39,11 @@ const WatchlistItem: React.FC<TopProduct> = ({
       </div>
       <div>
         <h4 className="mb-1 font-medium text-right text-gray-700 text-theme-sm dark:text-gray-400">
-          {formatIDR(harga_jual)}
+          {formatIDR(sell_price)}
         </h4>
         <span
           className={`flex items-center justify-end gap-1 font-medium text-theme-xs`}>
-          {total_sold} Sold
+          {total_items_sold} Sold
         </span>
       </div>
     </div>

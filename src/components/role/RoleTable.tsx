@@ -3,7 +3,7 @@ import { PaginatedResponse, initialPageInfo, BaseParams } from "@/types/shared/c
 import Switch from "../form/switch/Switch";
 import { useCallback, useEffect, useState } from "react";
 import { Role } from "@/types/role/role";
-import { getRoles } from "@/services/roleService";
+import { getRoles } from "@/services/admin/roleService";
 import { dateFormatReadable } from "@/utils/dateFormatter";
 import { getNoRow } from "@/utils/pageIndexHelper";
 import AddRoleModal from "./AddRoleModal";

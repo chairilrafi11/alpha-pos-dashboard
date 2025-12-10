@@ -9,6 +9,7 @@ export async function getShiftingHistories(params: BaseParams): Promise<Paginate
         const endpoint = `/shifting-histories?${queryString}`;
         const data = await apiFetchPaginated<ShiftingHistory>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'GET',
             }

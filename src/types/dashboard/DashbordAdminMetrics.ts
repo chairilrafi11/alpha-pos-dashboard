@@ -1,4 +1,7 @@
-export interface SuperAdminMetrix {
+import { OrderStatus } from "./OrderStatus"
+import { TopProduct } from "./topProduct"
+
+export interface DashboardAdminMetrics {
   platform_summary: PlatformSummary
   order_status: OrderStatus[]
   sessions_by_platform: SessionsByPlatform
@@ -18,13 +21,6 @@ export interface PlatformSummary {
   total_category: number
   total_products: number
   total_suppliers: number
-}
-
-export interface OrderStatus {
-  date: string
-  total_finished: number
-  total_canceled: number
-  total_on_progress: number
 }
 
 export interface SessionsByPlatform {
@@ -53,15 +49,6 @@ export interface TopMerchant {
   group_name: string
   total_sales: number
   transaction_count: number
-}
-
-export interface TopProduct {
-  id: number
-  name: string
-  image: string
-  site_name: string
-  harga_jual: string
-  total_sold: number
 }
 
 export interface SystemStatus {

@@ -9,6 +9,7 @@ export async function getOrders(params: BaseParams): Promise<PaginatedResponse<O
         const endpoint = `/orders?${queryString}`;
         const data = await apiFetchPaginated<Order>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'GET',
             }
@@ -25,6 +26,7 @@ export async function getOrderDetail(id: number): Promise<OrderDetail> {
     try {
         const data = await apiFetch<OrderDetail>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'GET',
             }

@@ -15,6 +15,7 @@ export async function getCategories(params: BaseParams): Promise<PaginatedRespon
         const endpoint = `/categories?${queryString}`;
         const data = await apiFetchPaginated<Category>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'GET',
             }
@@ -31,6 +32,7 @@ export async function getCategoryDetail(categoryId: number): Promise<CategoryDet
     try {
         const data = await apiFetch<CategoryDetail>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'GET',
             }
@@ -47,9 +49,10 @@ export async function createCategory(body: CategoryDataRequest): Promise<Categor
     try {
         const data = await apiFetch<CategoryDetail>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'POST',
-                body: JSON.stringify(body),
+                body: body,
             },
             showSuccess: true,
         });
@@ -65,9 +68,10 @@ export async function updateCategory(categoryId: number, body: CategoryDataReque
     try {
         const data = await apiFetch<CategoryDetail>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'PUT',
-                body: JSON.stringify(body),
+                body: body,
             },
             showSuccess: true,
         });
@@ -83,6 +87,7 @@ export async function deleteCategory(categoryId: number): Promise<boolean> {
     try {
         const data = await apiFetch<boolean>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'DELETE',
             },
@@ -101,6 +106,7 @@ export async function getCategoryOptions(params: BaseParams): Promise<OptionData
         const endpoint = `/categories/options?${queryString}`;
         const result = await apiFetchPaginated<BranchOption>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'GET',
             }

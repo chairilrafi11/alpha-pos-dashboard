@@ -13,6 +13,7 @@ export async function getMerchants(params: BaseParams): Promise<PaginatedRespons
     try {
         const data = await apiFetchPaginated<Merchant>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'GET',
             }
@@ -29,6 +30,7 @@ export async function getMerchantDetail(id: number): Promise<MerchantDetail> {
     try {
         const data = await apiFetch<MerchantDetail>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'GET',
             }
@@ -45,9 +47,10 @@ export async function createMerchant(body: MerchantCreateRequest): Promise<Merch
     try {
         const data = await apiFetch<Merchant>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'POST',
-                body: JSON.stringify(body),
+                body: body,
             }
         });
 
@@ -64,6 +67,7 @@ export async function getMerchantOptions(query: string): Promise<OptionData[]> {
 
         const data = await apiFetchPaginated<User>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'GET',
             }

@@ -10,6 +10,7 @@ export async function getProducts(params: BaseParams): Promise<PaginatedResponse
         const endpoint = `/products?${queryString}`;
         const data = await apiFetchPaginated<Product>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'GET',
             }
@@ -25,6 +26,7 @@ export async function getProductDetail(productId: number): Promise<ProductDetail
     try {
         const data = await apiFetch<ProductDetail>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'GET',
             }
@@ -41,9 +43,10 @@ export async function createProduct(body: ProductDataRequest): Promise<ProductDe
     try {
         const data = await apiFetch<ProductDetail>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'POST',
-                body: JSON.stringify(body),
+                body: body,
             },
             showSuccess: true,
         });
@@ -59,9 +62,10 @@ export async function updateProduct(productId: number, body: ProductDataRequest)
     try {
         const data = await apiFetch<ProductDetail>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'PUT',
-                body: JSON.stringify(body),
+                body: body,
             },
             showSuccess: true,
         });
@@ -77,6 +81,7 @@ export async function deleteProduct(productId: number): Promise<boolean> {
     try {
         const data = await apiFetch<boolean>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'DELETE',
             },
@@ -88,22 +93,3 @@ export async function deleteProduct(productId: number): Promise<boolean> {
         throw error;
     }
 }
-
-// export async function getBranchOptions(queryString: string): Promise<OptionData[]> {
-//     const params = { name: queryString, limit: 20 };
-//     const endpoint = `/branches/options?${buildQueryParams(params)}`;
-//     try {
-//         const data = await apiFetchPaginated<BranchOption>({
-//             endpoint,
-//             options: {
-//                 method: 'GET',
-//             }
-//         });
-//         return data.data.map(option => ({
-//             value: option.id,
-//             label: `${option.name}`,
-//         }))
-//     } catch (error) {
-//         throw error;
-//     }
-// }

@@ -13,6 +13,7 @@ export async function getUsers(params: BaseParams): Promise<PaginatedResponse<Us
 
         const data = await apiFetchPaginated<User>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'GET',
             }
@@ -29,6 +30,7 @@ export async function getUserDetail(id: number): Promise<UserDetail> {
     try {
         const data = await apiFetch<UserDetail>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'GET',
             }
@@ -45,9 +47,10 @@ export async function createUser(body: UserDataRequest): Promise<User> {
     try {
         const data = await apiFetch<User>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'POST',
-                body: JSON.stringify(body),
+                body: body,
             },
             showSuccess: true
         });
@@ -63,9 +66,10 @@ export async function updateUser(id: number, body: UserDataRequest): Promise<Use
     try {
         const data = await apiFetch<User>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'PUT',
-                body: JSON.stringify(body),
+                body: body,
             },
             showSuccess: true
         });
@@ -81,6 +85,7 @@ export async function deleteUser(id: number): Promise<boolean> {
     try {
         const data = await apiFetch<boolean>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'DELETE',
             },
@@ -97,6 +102,7 @@ export async function checkUserEmailAvailability(email: string): Promise<boolean
     try {
         const data = await apiFetch<UserEmailAvailability>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'GET',
             }

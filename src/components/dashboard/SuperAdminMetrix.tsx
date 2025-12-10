@@ -2,7 +2,7 @@
 import React from "react";
 import Badge from "../ui/badge/Badge";
 import { ArrowDownIcon, ArrowUpIcon, BoxIconLine, GroupIcon } from "@/icons";
-import { PlatformSummary } from "@/types/dashboard/SuperAdminMetrix";
+import { PlatformSummary } from "@/types/dashboard/DashbordAdminMetrics";
 import { formatIDR } from "@/utils/currencyFormatter";
 
 type Props = {

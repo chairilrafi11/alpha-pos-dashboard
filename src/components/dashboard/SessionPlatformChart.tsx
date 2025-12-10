@@ -7,7 +7,7 @@ import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { MoreDotIcon } from "@/icons";
 
 import dynamic from "next/dynamic";
-import { SessionsByPlatform } from "@/types/dashboard/SuperAdminMetrix";
+import { SessionsByPlatform } from "@/types/dashboard/DashbordAdminMetrics";
 
 type Props = {
   data: SessionsByPlatform | undefined;

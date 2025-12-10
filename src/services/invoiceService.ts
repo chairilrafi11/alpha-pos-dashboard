@@ -9,6 +9,7 @@ export async function getInvoices(params: BaseParams): Promise<PaginatedResponse
         const endpoint = `/invoices?${queryString}`;
         const data = await apiFetchPaginated<Invoice>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'GET',
             }
@@ -25,6 +26,7 @@ export async function getInvoiceDetail(invoiceId: number): Promise<InvoiceDetail
     try {
         const data = await apiFetch<InvoiceDetail>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'GET',
             }

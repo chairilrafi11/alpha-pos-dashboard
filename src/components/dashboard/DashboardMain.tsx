@@ -2,6 +2,7 @@
 
 import DashboardSuperAdmin from "@/components/dashboard/DashboardSuperAdmin";
 import { useAuth } from "@/context/AuthContext";
+import DashboardOwner from "./DashboardOwner";
 
 export default function DashboardMain() {
     const { profile } = useAuth();
@@ -14,6 +15,7 @@ export default function DashboardMain() {
     } else {
         return (
             <div>
+                <DashboardOwner />
             </div>
         );
     }

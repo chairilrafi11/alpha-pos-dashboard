@@ -9,6 +9,7 @@ export async function getRoles(): Promise<PaginatedResponse<Role>> {
         const endpoint = `/roles`;
         const data = await apiFetchPaginated<Role>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'GET',
             }
@@ -25,6 +26,7 @@ export async function getRoleAccess(roleId: number): Promise<PaginatedResponse<R
         const endpoint = `/role-access/${roleId}`;
         const data = await apiFetchPaginated<RoleAccess>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'GET',
             }
@@ -41,9 +43,10 @@ export async function syncRoleAccess(roleId: number, request: RoleAccessDataRequ
         const endpoint = `/role-access/${roleId}`;
         const data = await apiFetch<boolean>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'PUT',
-                body: JSON.stringify(request),
+                body: request,
             },
             showSuccess: true
         })

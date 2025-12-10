@@ -2,7 +2,7 @@ import { apiFetch } from '@/utils/apiClient';
 import { TransactionStat, TransactionStatsParams } from '@/types/stats/monthlyTransactionStats';
 import { ApiError } from '@/utils/apiError';
 import toast from 'react-hot-toast';
-import { TopProduct } from '@/types/dashboard/SuperAdminMetrix';
+import { TopProduct } from '@/types/dashboard/DashbordAdminMetrics';
 
 export async function getTransactionStats(params: TransactionStatsParams): Promise<TransactionStat[]> {
     try {
@@ -16,6 +16,7 @@ export async function getTransactionStats(params: TransactionStatsParams): Promi
 
         const data = await apiFetch<TransactionStat[]>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'GET',
             },
@@ -23,9 +24,6 @@ export async function getTransactionStats(params: TransactionStatsParams): Promi
 
         return data;
     } catch (error) {
-        if (error instanceof ApiError) {
-            toast.error(`Gagal memuat statistik: ${error.message}`);
-        }
         throw error;
     }
 }
@@ -42,6 +40,7 @@ export async function getTopProducts(params: TransactionStatsParams): Promise<To
 
         const data = await apiFetch<TopProduct[]>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'GET',
             },

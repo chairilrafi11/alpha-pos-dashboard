@@ -5,7 +5,6 @@ import { PaginatedResponse } from '@/types/shared/commonModel';
 
 import toast from 'react-hot-toast';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 const SUCCESS_CODE = ResponseCode.SUCCESS;
 
 interface RawApiResponse<T> {
@@ -20,7 +19,10 @@ interface ApiFetchProps {
   showSuccess?: boolean;
   showLoading?: boolean;
   endpoint: string;
-  options?: RequestInit;
+  // Menggunakan Omit untuk memastikan body untuk POST/PUT/DELETE dikontrol secara eksplisit (sebagai objek)
+  options?: Omit<RequestInit, 'body'> & { body?: Record<string, any> };
+  params?: Record<string, any>; // Objek untuk query parameters
+  endpointRoleType: 'default' | 'base' | 'admin' | 'client';
 }
 
 let globalShowPopup: ((
@@ -43,17 +45,53 @@ export function setGlobalModalHandler(
 
 async function executeFetch<T>(props: ApiFetchProps): Promise<RawApiResponse<T>> {
   const token = getToken();
+  const method = props.options?.method?.toUpperCase() || 'GET';
+
+  // FIX: Destructure 'body' (rawBody) dari props.options agar tidak terjadi error tipe saat menyebar ke RequestInit
+  const { body: rawBody, ...restOptions } = props.options || {};
 
   const headers = {
     'Content-Type': 'application/json',
     ...(token && { Authorization: `Bearer ${token}` }),
-    ...props.options?.headers,
+    // Ambil headers dari sisa options (restOptions)
+    ...restOptions.headers,
   };
 
-  const response = await fetch(`${API_BASE_URL}${props.endpoint}`, {
-    ...props.options,
+  let finalUrl = buildAPIUrl(props.endpointRoleType, props.endpoint);
+
+  // Inisialisasi finalOptions dengan restOptions (yang sudah kompatibel dengan RequestInit)
+  let finalOptions: RequestInit = {
+    ...restOptions,
+    method,
     headers,
-  });
+  };
+
+  // --- 1. HANDLE QUERY PARAMS (UNTUK GET) ---
+  if (method === 'GET' && props.params) {
+    const query = new URLSearchParams(props.params as any).toString();
+    finalUrl = `${finalUrl}?${query}`;
+
+    // Pastikan body dihapus untuk GET
+    if (finalOptions.body) {
+      delete finalOptions.body;
+    }
+  }
+  // --- 2. HANDLE JSON BODY (UNTUK POST, PUT, DELETE) ---
+  else if (method !== 'GET' && rawBody) { // Gunakan rawBody yang sudah diekstrak
+    // Diasumsikan rawBody adalah objek mentah (raw object)
+    try {
+      finalOptions.body = JSON.stringify(rawBody);
+    } catch (e) {
+      console.error("Failed to stringify request body:", e);
+      // Tangani kesalahan stringify secara eksplisit
+      throw new ApiError('Failed to serialize request body to JSON.', ResponseCode.CLIENT_PARSE_ERROR, 0);
+    }
+  }
+
+  const response = await fetch(finalUrl, finalOptions);
+
+  console.log("props:", props);
+  console.log("response:", response);
 
   let responseJson: RawApiResponse<T>;
 
@@ -126,6 +164,28 @@ export async function apiFetchPaginated<T>(props: ApiFetchProps): Promise<Pagina
     data: responseJson.data as T[],
     page_info: responseJson.page_info,
   };
+}
+
+function buildAPIUrl(type: 'default' | 'base' | 'admin' | 'client', endpoint: string): string {
+  let apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  switch (type) {
+    case 'default':
+      apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      break;
+    case 'base':
+      apiUrl = `${apiUrl}${process.env.NEXT_PUBLIC_ENDPOINT_URL}`;
+      break;
+    case 'admin':
+      apiUrl = `${apiUrl}${process.env.NEXT_PUBLIC_ENDPOINT_ADMIN_URL}`;
+      break;
+    case 'client':
+      apiUrl = `${apiUrl}${process.env.NEXT_PUBLIC_ENDPOINT_CLIENT_URL}`;
+      break;
+    default:
+      apiUrl = '';
+      break;
+  }
+  return `${apiUrl}${endpoint}`;
 }
 
 function handleError(error: ApiError) {

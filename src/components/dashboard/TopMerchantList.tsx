@@ -5,7 +5,7 @@ import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { MoreDotIcon } from "@/icons";
 import Image from "next/image";
-import { TopMerchant } from "@/types/dashboard/SuperAdminMetrix";
+import { TopMerchant } from "@/types/dashboard/DashbordAdminMetrics";
 import { formatIDR } from "@/utils/currencyFormatter";
 
 type Props = {

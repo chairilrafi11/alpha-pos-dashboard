@@ -10,6 +10,7 @@ export async function getAccess(params: BaseParams): Promise<PaginatedResponse<A
         const endpoint = `/access?${queryString}`;
         const data = await apiFetchPaginated<Access>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'GET',
             }
@@ -25,6 +26,7 @@ export async function getAccessDetail(accessId: number): Promise<Access> {
     try {
         const data = await apiFetch<Access>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'GET',
             }
@@ -40,9 +42,10 @@ export async function createAccess(body: AccessDataRequest): Promise<Access> {
     try {
         const data = await apiFetch<Access>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'POST',
-                body: JSON.stringify(body),
+                body: body,
             },
             showSuccess: true,
         });
@@ -57,9 +60,10 @@ export async function updateAccess(accessId: number, body: AccessDataRequest): P
     try {
         const data = await apiFetch<Access>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'PUT',
-                body: JSON.stringify(body),
+                body: body,
             },
             showSuccess: false,
         });
@@ -74,6 +78,7 @@ export async function deleteAccess(accessId: number): Promise<boolean> {
     try {
         const data = await apiFetch<boolean>({
             endpoint,
+            endpointRoleType: 'admin',
             options: {
                 method: 'DELETE',
             },
